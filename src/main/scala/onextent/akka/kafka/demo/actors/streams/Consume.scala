@@ -1,22 +1,21 @@
-package onextent.akka.kafka.demo
+package onextent.akka.kafka.demo.actors.streams
 
 import akka.Done
 import akka.kafka.scaladsl.Consumer
 import akka.kafka.{ConsumerMessage, Subscriptions}
 import akka.stream.scaladsl.Sink
-import com.microsoft.azure.reactiveeventhubs.ResumeOnError._
 import com.typesafe.scalalogging.LazyLogging
-import onextent.akka.kafka.demo.streams.eventhubs.EhPublish
+import onextent.akka.kafka.demo.Conf.{consumerSettings, parallelism, topic}
 
 import scala.concurrent.Future
 
-object ReadKafkaWriteEventHubs extends LazyLogging with Conf {
+object Consume extends LazyLogging {
 
   def apply(): Future[Done] = {
     Consumer
       .committableSource(consumerSettings, Subscriptions.topics(topic))
       .mapAsync(parallelism) {
-        EhPublish()
+        ObservationConsumer()
       }
       .mapAsync(parallelism) {
         (msg: ConsumerMessage.CommittableMessage[Array[Byte], String]) =>
