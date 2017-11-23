@@ -8,7 +8,8 @@ import com.typesafe.scalalogging.LazyLogging
 import onextent.akka.kafka.demo.Conf._
 import onextent.akka.kafka.demo.actors.streams.Consume
 import onextent.akka.kafka.demo.actors.{DeviceService, LocationService}
-import onextent.akka.kafka.demo.http.{DeviceRoute, HttpSupport, LocationRoute}
+import onextent.akka.kafka.demo.http.functions.HttpSupport
+import onextent.akka.kafka.demo.http.{DeviceRoute, LocationRoute, ObservationRoute}
 
 object Main extends App with LazyLogging with HttpSupport with Directives {
 
@@ -26,7 +27,8 @@ object Main extends App with LazyLogging with HttpSupport with Directives {
         handleErrors {
           cors(corsSettings) {
             DeviceRoute(deviceService) ~
-              LocationRoute(locationService)
+            LocationRoute(locationService) ~
+            ObservationRoute()
           }
         }
       }

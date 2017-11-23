@@ -27,3 +27,11 @@ POST /api/location
     "longitude": 0.2
 }
 
+--
+POST /api/observation
+{
+    "name": "water_level",
+    "value": 0.1,
+    "deviceId": "3400078d-9f5f-4ab2-924d-4d5124ed1d6b"
+}
+

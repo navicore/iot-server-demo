@@ -6,13 +6,9 @@ import akka.http.scaladsl.server.{Directives, Route}
 import akka.pattern.ask
 import com.typesafe.scalalogging.LazyLogging
 import onextent.akka.kafka.demo.actors.LocationService._
+import onextent.akka.kafka.demo.http.functions.HttpSupport
 import onextent.akka.kafka.demo.models.functions.JsonSupport
-import onextent.akka.kafka.demo.models.{
-  Device,
-  Location,
-  LocationRequest,
-  MkLocation
-}
+import onextent.akka.kafka.demo.models.{Device, Location, LocationRequest, MkLocation}
 import spray.json._
 
 import scala.concurrent.Future

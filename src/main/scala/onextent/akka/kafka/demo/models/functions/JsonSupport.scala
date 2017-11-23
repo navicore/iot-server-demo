@@ -70,4 +70,7 @@ trait JsonSupport extends SprayJsonSupport with DefaultJsonProtocol {
   implicit val observationFormat: RootJsonFormat[Observation] = jsonFormat5(
     Observation)
 
+  implicit val observationReqFormat: RootJsonFormat[ObservationRequest] = jsonFormat3(
+    ObservationRequest)
+
 }

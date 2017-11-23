@@ -1,4 +1,6 @@
-package onextent.akka.kafka.demo.http
+package onextent.akka.kafka.demo.http.functions
+
+import java.io.IOException
 
 import akka.http.scaladsl.model._
 import akka.http.scaladsl.model.headers.{HttpOrigin, HttpOriginRange}
@@ -32,9 +34,12 @@ trait HttpSupport extends LazyLogging {
     : RejectionHandler = corsRejectionHandler withFallback RejectionHandler.default
 
   val exceptionHandler: ExceptionHandler = ExceptionHandler {
+    case e: IOException =>
+      logger.warn(s"$e")
+      complete(StatusCodes.ServiceUnavailable , e.getMessage)
     case e: Exception =>
       logger.warn(s"do not know $e")
-      complete(StatusCodes.BadRequest -> e.getMessage)
+      complete(StatusCodes.InternalServerError, e.getMessage)
   }
 
   val handleErrors
