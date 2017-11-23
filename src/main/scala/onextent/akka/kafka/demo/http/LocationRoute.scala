@@ -5,10 +5,11 @@ import akka.http.scaladsl.model.{ContentTypes, HttpEntity, StatusCodes}
 import akka.http.scaladsl.server.{Directives, Route}
 import akka.pattern.ask
 import com.typesafe.scalalogging.LazyLogging
+import onextent.akka.kafka.demo.actors.LocationService.GetAssessments
 import onextent.akka.kafka.demo.actors.LocationService._
 import onextent.akka.kafka.demo.http.functions.HttpSupport
 import onextent.akka.kafka.demo.models.functions.JsonSupport
-import onextent.akka.kafka.demo.models.{Device, Location, LocationRequest, MkLocation}
+import onextent.akka.kafka.demo.models._
 import spray.json._
 
 import scala.concurrent.Future
@@ -20,23 +21,44 @@ object LocationRoute
     with HttpSupport {
 
   def apply(service: ActorRef): Route =
-    path(urlpath / "location" / JavaUUID / "devices") { id =>
+    path(urlpath / "location" / JavaUUID / "assessments") { id =>
       get {
-        val f: Future[Any] = service ask GetDevices(id)
+        val f: Future[Any] = service ask GetAssessments(id)
         onSuccess(f) { (r: Any) =>
           {
             r match {
-              case devices: List[Device @unchecked] =>
-                complete(
-                  HttpEntity(ContentTypes.`application/json`,
-                             devices.toJson.prettyPrint))
-              case _ =>
+              case assessments: List[Assessment @unchecked] =>
+                complete(HttpEntity(ContentTypes.`application/json`,
+                                    assessments.toJson.prettyPrint))
+              case None =>
+                complete(StatusCodes.NotFound)
+              case e =>
+                logger.error(s"$e")
                 complete(StatusCodes.InternalServerError)
             }
           }
         }
       }
     } ~
+      path(urlpath / "location" / JavaUUID / "devices") { id =>
+        get {
+          val f: Future[Any] = service ask GetDevices(id)
+          onSuccess(f) { (r: Any) =>
+            {
+              r match {
+                case devices: List[Device @unchecked] =>
+                  complete(HttpEntity(ContentTypes.`application/json`,
+                                      devices.toJson.prettyPrint))
+                case None =>
+                  complete(StatusCodes.NotFound)
+                case e =>
+                  logger.error(s"$e")
+                  complete(StatusCodes.InternalServerError)
+              }
+            }
+          }
+        }
+      } ~
       path(urlpath / "location" / JavaUUID) { id =>
         get {
           val f: Future[Any] = service ask Get(id)

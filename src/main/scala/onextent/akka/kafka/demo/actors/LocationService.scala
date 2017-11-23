@@ -14,6 +14,7 @@ object LocationService {
 
   final case class Get(id: UUID)
   final case class GetDevices(id: UUID)
+  final case class GetAssessments(id: UUID)
   final case class Create(location: Location)
   final case class AlreadyExists(location: Location)
   final case class AddDevice(device: Device)
@@ -31,6 +32,10 @@ class LocationService(implicit timeout: Timeout) extends Actor with LazyLogging 
     case Get(id) =>
       def notFound(): Unit = sender() ! None
       context.child(id.toString).fold(notFound())(_ forward LocationActor.Get)
+
+    case GetAssessments(id) =>
+      def notFound(): Unit = sender() ! None
+      context.child(id.toString).fold(notFound())(_ forward LocationActor.GetAssessments)
 
     case GetDevices(id) =>
       def notFound(): Unit = sender() ! None

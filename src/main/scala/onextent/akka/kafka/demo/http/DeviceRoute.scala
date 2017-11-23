@@ -28,7 +28,10 @@ object DeviceRoute
                 complete(
                   HttpEntity(ContentTypes.`application/json`,
                              assessments.toJson.prettyPrint))
-              case _ =>
+              case None =>
+                complete(StatusCodes.NotFound)
+              case e =>
+                logger.error(s"$e")
                 complete(StatusCodes.InternalServerError)
             }
           }

@@ -49,5 +49,8 @@ GET /api/device/479d2b95-0b62-41ff-8c79-f1d13442a687/assessments
 GET /api/location/2ddc00b2-5425-47a8-bb87-911942c49886
 
 --
+GET /api/location/2ddc00b2-5425-47a8-bb87-911942c49886/assessments
+
+--
 GET /api/location/2ddc00b2-5425-47a8-bb87-911942c49886/devices
 
