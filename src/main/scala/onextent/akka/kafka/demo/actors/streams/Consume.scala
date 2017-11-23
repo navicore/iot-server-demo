@@ -1,6 +1,7 @@
 package onextent.akka.kafka.demo.actors.streams
 
 import akka.Done
+import akka.actor.ActorRef
 import akka.kafka.scaladsl.Consumer
 import akka.kafka.{ConsumerMessage, Subscriptions}
 import akka.stream.scaladsl.Sink
@@ -12,11 +13,11 @@ import scala.concurrent.Future
 
 object Consume extends LazyLogging {
 
-  def apply(): Future[Done] = {
+  def apply(deviceService: ActorRef, locationService: ActorRef): Future[Done] = {
     Consumer
       .committableSource(consumerSettings, Subscriptions.topics(topic))
       .mapAsync(parallelism) {
-        ObservationConsumer()
+        ObservationConsumer(deviceService)
       }
       .mapAsync(parallelism) {
         (msg: ConsumerMessage.CommittableMessage[Array[Byte], String]) =>

@@ -7,7 +7,7 @@ import akka.util.Timeout
 import com.typesafe.scalalogging.LazyLogging
 import onextent.akka.kafka.demo.actors.DeviceService._
 import onextent.akka.kafka.demo.actors.LocationService.AddDevice
-import onextent.akka.kafka.demo.models.Device
+import onextent.akka.kafka.demo.models.{Assessment, Device}
 
 object DeviceService {
   def props(locationService: ActorRef)(implicit timeout: Timeout) =
@@ -16,6 +16,8 @@ object DeviceService {
 
   final case class Get(id: UUID)
   final case class Create(device: Device)
+  final case class GetAssessments(id: UUID)
+  final case class SetAssessment(assessment: Assessment, deviceId: UUID)
   final case class AlreadyExists(device: Device)
 }
 
@@ -31,9 +33,17 @@ class DeviceService(locationService: ActorRef)(implicit timeout: Timeout)
 
   override def receive: PartialFunction[Any, Unit] = {
 
+    case SetAssessment(assessment, deviceId) =>
+      def notFound(): Unit = logger.warn(s"device $deviceId not found for assessment $assessment update")
+      context.child(deviceId.toString).fold(notFound())(_ forward assessment)
+
     case Get(id) =>
       def notFound(): Unit = sender() ! None
       context.child(id.toString).fold(notFound())(_ forward DeviceActor.Get)
+
+    case GetAssessments(id) =>
+      def notFound(): Unit = sender() ! None
+      context.child(id.toString).fold(notFound())(_ forward DeviceActor.GetAssessments)
 
     case Create(device) =>
       context

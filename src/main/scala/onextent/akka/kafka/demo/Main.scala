@@ -19,7 +19,7 @@ object Main extends App with LazyLogging with HttpSupport with Directives {
   val deviceService: ActorRef =
     actorSystem.actorOf(DeviceService.props(locationService), DeviceService.name)
 
-  Consume()
+  Consume(deviceService, locationService)
 
   val route =
     HealthCheck ~

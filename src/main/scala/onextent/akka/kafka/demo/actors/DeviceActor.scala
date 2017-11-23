@@ -15,18 +15,18 @@ object DeviceActor {
 
 class DeviceActor(device: Device) extends Actor with LazyLogging {
 
-  def receive: Receive = hasState(List[Assessment]())
+  def receive: Receive = hasState(Map[String, Assessment]())
 
-  def hasState(assessments: List[Assessment]): Receive = {
+  def hasState(assessments: Map[String, Assessment]): Receive = {
 
     case assessment: Assessment =>
-      context become hasState(assessment :: assessments)
+      context become hasState(assessments + (assessment.name -> assessment))
 
     case Get =>
       sender() ! device
 
     case GetAssessments =>
-      sender() ! assessments
+      sender() ! assessments.values.toList
   }
 
 }

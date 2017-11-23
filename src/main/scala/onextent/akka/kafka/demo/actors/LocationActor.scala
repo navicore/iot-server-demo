@@ -17,12 +17,12 @@ object LocationActor {
 
 class LocationActor(location: Location) extends Actor with LazyLogging {
 
-  def receive: Receive = hasState(List[Assessment](), List[Device]())
+  def receive: Receive = hasState(Map[String, Assessment](), List[Device]())
 
-  def hasState(assessments: List[Assessment], devices: List[Device]): Receive = {
+  def hasState(assessments: Map[String, Assessment], devices: List[Device]): Receive = {
 
     case assessment: Assessment =>
-      context become hasState(assessment :: assessments, devices)
+      context become hasState(assessments + (assessment.name -> assessment), devices)
 
     case AddDevice(device) =>
       context become hasState(assessments, device :: devices)

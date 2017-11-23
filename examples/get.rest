@@ -3,14 +3,16 @@ http://localhost:8080
 Content-Type: application/json; charset=utf-8
 --
 --
-GET /api/device/32bebf5d-2773-4725-8e26-6c9aa2f7e2ae
+GET /api/device/5d45a63d-7ed2-4270-a5c7-ae8852da57f4
 
+--
+GET /api/device/ffeb8a0b-7805-41d5-8041-760e61ae22a3/assessments
 --
 POST /api/device
 {
     "name": "my device 2",
     "kind": 99,
-    "location": "3400078d-9f5f-4ab2-924d-4d5124ed1d6b",
+    "location": "9822fdf2-768d-40cb-ab41-0c7c50a55a60",
     "desc": "another important gadget"
 }
 
@@ -30,8 +32,8 @@ POST /api/location
 --
 POST /api/observation
 {
-    "name": "water_level",
-    "value": 0.1,
-    "deviceId": "3400078d-9f5f-4ab2-924d-4d5124ed1d6b"
+    "name": "oil_level",
+    "value": 0.3,
+    "deviceId": "ffeb8a0b-7805-41d5-8041-760e61ae22a3"
 }
 

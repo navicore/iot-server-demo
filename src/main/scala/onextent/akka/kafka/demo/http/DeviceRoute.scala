@@ -5,10 +5,10 @@ import akka.http.scaladsl.model.{ContentTypes, HttpEntity, StatusCodes}
 import akka.http.scaladsl.server.{Directives, Route}
 import akka.pattern.ask
 import com.typesafe.scalalogging.LazyLogging
-import onextent.akka.kafka.demo.actors.DeviceService._
+import onextent.akka.kafka.demo.actors.DeviceService.{AlreadyExists, Create, Get, GetAssessments}
 import onextent.akka.kafka.demo.http.functions.HttpSupport
 import onextent.akka.kafka.demo.models.functions.JsonSupport
-import onextent.akka.kafka.demo.models.{Device, DeviceRequest, MkDevice}
+import onextent.akka.kafka.demo.models.{Assessment, Device, DeviceRequest, MkDevice}
 import spray.json._
 
 import scala.concurrent.Future
@@ -20,6 +20,23 @@ object DeviceRoute
     with HttpSupport {
 
   def apply(service: ActorRef): Route =
+    path(urlpath / "device" / JavaUUID / "assessments") { id =>
+      get {
+        val f: Future[Any] = service ask GetAssessments(id)
+        onSuccess(f) { (r: Any) =>
+          {
+            r match {
+              case assessments: List[Assessment] =>
+                complete(
+                  HttpEntity(ContentTypes.`application/json`,
+                             assessments.toJson.prettyPrint))
+              case _ =>
+                complete(StatusCodes.InternalServerError)
+            }
+          }
+        }
+      }
+    } ~
     path(urlpath / "device" / JavaUUID) { id =>
       get {
         val f: Future[Any] = service ask Get(id)
