@@ -1,9 +1,10 @@
 package onextent.akka.kafka.demo.models.functions
 
+import java.time.{ZoneOffset, ZonedDateTime}
 import java.util.{Date, UUID}
 
 import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport
-import onextent.akka.kafka.demo.models.{Assessment, Device, Location, Observation}
+import onextent.akka.kafka.demo.models._
 import spray.json._
 
 trait JsonSupport extends SprayJsonSupport with DefaultJsonProtocol {
@@ -21,6 +22,16 @@ trait JsonSupport extends SprayJsonSupport with DefaultJsonProtocol {
   def now8601(): String = {
     val now = new java.util.Date()
     get8601(now)
+  }
+
+  implicit object ZonedDateTime extends JsonFormat[ZonedDateTime] {
+    def write(dt: ZonedDateTime): JsValue = JsString(dt.toString)
+    def read(value: JsValue): ZonedDateTime = {
+      value match {
+        case JsString(dt) => java.time.ZonedDateTime.ofInstant(parse8601(dt).toInstant, ZoneOffset.UTC)
+        case _            => throw DeserializationException("Expected 8601")
+      }
+    }
   }
 
   implicit object Date extends JsonFormat[Date] {
@@ -50,8 +61,11 @@ trait JsonSupport extends SprayJsonSupport with DefaultJsonProtocol {
   implicit val locationFormat: RootJsonFormat[Location] = jsonFormat4(
     Location)
 
-  implicit val deviceFormat: RootJsonFormat[Device] = jsonFormat2(
-    Device)
+  implicit val locationReqFormat: RootJsonFormat[LocationRequest] = jsonFormat3(LocationRequest)
+
+  implicit val deviceFormat: RootJsonFormat[Device] = jsonFormat6(Device)
+
+  implicit val deviceReqFormat: RootJsonFormat[DeviceRequest] = jsonFormat4(DeviceRequest)
 
   implicit val observationFormat: RootJsonFormat[Observation] = jsonFormat5(
     Observation)

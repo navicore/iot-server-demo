@@ -6,6 +6,7 @@ import akka.kafka.{ConsumerMessage, Subscriptions}
 import akka.stream.scaladsl.Sink
 import com.typesafe.scalalogging.LazyLogging
 import onextent.akka.kafka.demo.Conf.{consumerSettings, parallelism, topic}
+import onextent.akka.kafka.demo.Conf._
 
 import scala.concurrent.Future
 

@@ -1,0 +1,26 @@
+http://localhost:8080
+-k
+Content-Type: application/json; charset=utf-8
+--
+--
+GET /api/device/32bebf5d-2773-4725-8e26-6c9aa2f7e2ae
+
+--
+POST /api/device
+{
+    "name": "navicore",
+    "kind": 99,
+    "desc": "important gadget"
+}
+
+--
+GET /api/location/7206fad2-5aaf-41a0-9f00-42f0d9b1e6a2
+
+--
+POST /api/location
+{
+    "name": "naviland",
+    "latitude": 0.1,
+    "longitude": 0.2
+}
+
