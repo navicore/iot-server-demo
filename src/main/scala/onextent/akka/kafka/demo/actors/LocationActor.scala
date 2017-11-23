@@ -23,11 +23,9 @@ class LocationActor(location: Location) extends Actor with LazyLogging {
       context become hasState(assessment :: assessments)
 
     case Get =>
-      logger.debug("ejs got actor get")
       sender() ! location
 
     case GetAssessments =>
-      logger.debug("ejs got actor get assessments")
       sender() ! assessments
   }
 

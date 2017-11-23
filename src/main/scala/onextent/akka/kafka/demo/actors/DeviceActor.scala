@@ -23,11 +23,9 @@ class DeviceActor(device: Device) extends Actor with LazyLogging {
       context become hasState(assessment :: assessments)
 
     case Get =>
-      logger.debug("ejs got actor get")
       sender() ! device
 
     case GetAssessments =>
-      logger.debug("ejs got actor get assessments")
       sender() ! assessments
   }
 

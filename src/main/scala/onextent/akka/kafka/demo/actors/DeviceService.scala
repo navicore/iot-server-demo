@@ -27,7 +27,6 @@ class DeviceService(implicit timeout: Timeout) extends Actor with LazyLogging {
   override def receive: PartialFunction[Any, Unit] = {
 
     case Get(id) =>
-      logger.debug(s"ejs got one $id")
       def notFound(): Unit = sender() ! None
       context.child(id.toString).fold(notFound())(_ forward DeviceActor.Get)
 
