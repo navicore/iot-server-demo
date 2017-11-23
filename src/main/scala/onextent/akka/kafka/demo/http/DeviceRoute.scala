@@ -11,8 +11,6 @@ import onextent.akka.kafka.demo.models.functions.JsonSupport
 import onextent.akka.kafka.demo.models.{Assessment, Device, DeviceRequest, MkDevice}
 import spray.json._
 
-import scala.concurrent.Future
-
 object DeviceRoute
     extends JsonSupport
     with LazyLogging
@@ -22,11 +20,11 @@ object DeviceRoute
   def apply(service: ActorRef): Route =
     path(urlpath / "device" / JavaUUID / "assessments") { id =>
       get {
-        val f: Future[Any] = service ask GetAssessments(id)
+        val f = service ask GetAssessments(id)
         onSuccess(f) { (r: Any) =>
           {
             r match {
-              case assessments: List[Assessment] =>
+              case assessments: List[Assessment @unchecked] =>
                 complete(
                   HttpEntity(ContentTypes.`application/json`,
                              assessments.toJson.prettyPrint))
@@ -39,7 +37,7 @@ object DeviceRoute
     } ~
     path(urlpath / "device" / JavaUUID) { id =>
       get {
-        val f: Future[Any] = service ask Get(id)
+        val f = service ask Get(id)
         onSuccess(f) { (r: Any) =>
           {
             r match {
@@ -58,7 +56,7 @@ object DeviceRoute
         post {
           decodeRequest {
             entity(as[DeviceRequest]) { deviceReq =>
-              val f: Future[Any] = service ask Create(MkDevice(deviceReq))
+              val f = service ask Create(MkDevice(deviceReq))
               onSuccess(f) { (r: Any) =>
                 {
                   r match {

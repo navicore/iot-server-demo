@@ -2,6 +2,8 @@ package onextent.akka.kafka.demo.actors.streams
 
 import akka.actor.ActorRef
 import akka.kafka.ConsumerMessage._
+import akka.pattern.ask
+import akka.util.Timeout
 import com.typesafe.scalalogging.LazyLogging
 import onextent.akka.kafka.demo.Conf
 import onextent.akka.kafka.demo.actors.DeviceService.SetAssessment
@@ -9,18 +11,21 @@ import onextent.akka.kafka.demo.models.functions.JsonSupport
 import onextent.akka.kafka.demo.models.{Assessment, Observation}
 import spray.json._
 
-import scala.concurrent.{Future, Promise}
+import scala.concurrent.{ExecutionContext, Future, Promise}
+import scala.util.{Failure, Success}
 
 object ObservationConsumer extends LazyLogging with Conf with JsonSupport {
 
-  def apply(deviceService: ActorRef)
-    : CommittableMessage[Array[Byte], String] => Future[
-      CommittableMessage[Array[Byte], String]] = {
+  def apply(deviceService: ActorRef)(
+      implicit timeout: Timeout,
+      ec: ExecutionContext): CommittableMessage[Array[Byte], String] => Future[
+    CommittableMessage[Array[Byte], String]] = {
 
     (msg: CommittableMessage[Array[Byte], String]) =>
       val promise = Promise[CommittableMessage[Array[Byte], String]]()
 
-      val observation: Observation = msg.record.value().parseJson.convertTo[Observation]
+      val observation: Observation =
+        msg.record.value().parseJson.convertTo[Observation]
 
       val key = new String(
         Option(msg.record.key())
@@ -31,9 +36,15 @@ object ObservationConsumer extends LazyLogging with Conf with JsonSupport {
       val assessment = Assessment(observation.name, observation.value)
       logger.debug(s"assessment: $assessment")
 
-      deviceService ! SetAssessment(assessment, observation.deviceId)
+      val f = deviceService ask SetAssessment(assessment, observation.deviceId)
 
-      promise.success(msg) // note, not async yet, need an ack from the device actor to affect back pressure
+      f onComplete {
+        case Success(_) =>
+          promise.success(msg)
+        case Failure(e) =>
+          logger.warn(s"can not update device assessment $assessment: $e")
+          promise.success(msg)
+      }
 
       promise.future
   }

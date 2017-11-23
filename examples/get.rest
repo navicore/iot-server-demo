@@ -2,38 +2,52 @@ http://localhost:8080
 -k
 Content-Type: application/json; charset=utf-8
 --
---
-GET /api/device/5d45a63d-7ed2-4270-a5c7-ae8852da57f4
-
---
-GET /api/device/ffeb8a0b-7805-41d5-8041-760e61ae22a3/assessments
---
-POST /api/device
-{
-    "name": "my device 2",
-    "kind": 99,
-    "location": "9822fdf2-768d-40cb-ab41-0c7c50a55a60",
-    "desc": "another important gadget"
-}
-
---
-GET /api/location/3400078d-9f5f-4ab2-924d-4d5124ed1d6b
---
-GET /api/location/3400078d-9f5f-4ab2-924d-4d5124ed1d6b/devices
 
 --
 POST /api/location
 {
     "name": "naviland",
+    "id": "2ddc00b2-5425-47a8-bb87-911942c49886",
     "latitude": 0.1,
     "longitude": 0.2
 }
 
 --
+POST /api/device
+{
+    "name": "my device 1",
+    "id": "814a41d9-6778-4b14-bac6-2dec2d5f4085",
+    "location": "2ddc00b2-5425-47a8-bb87-911942c49886",
+    "desc": "important gadget"
+}
+
+--
+POST /api/device
+{
+    "name": "my device 2",
+    "id": "479d2b95-0b62-41ff-8c79-f1d13442a687",
+    "kind": 99,
+    "location": "2ddc00b2-5425-47a8-bb87-911942c49886",
+    "desc": "another important gadget"
+}
+
+--
 POST /api/observation
 {
-    "name": "oil_level",
-    "value": 0.3,
-    "deviceId": "ffeb8a0b-7805-41d5-8041-760e61ae22a3"
+    "name": "oil_temp",
+    "value": 10.23,
+    "deviceId": "479d2b95-0b62-41ff-8c79-f1d13442a687"
 }
+
+--
+GET /api/device/479d2b95-0b62-41ff-8c79-f1d13442a687
+
+--
+GET /api/device/479d2b95-0b62-41ff-8c79-f1d13442a687/assessments
+
+--
+GET /api/location/2ddc00b2-5425-47a8-bb87-911942c49886
+
+--
+GET /api/location/2ddc00b2-5425-47a8-bb87-911942c49886/devices
 

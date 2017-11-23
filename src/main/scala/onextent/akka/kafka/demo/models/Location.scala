@@ -3,20 +3,22 @@ package onextent.akka.kafka.demo.models
 import java.util.UUID
 
 case class Location(name: String,
+                    id: UUID = UUID.randomUUID(),
                     latitude: Double,
-                    longitude: Double,
-                    id: UUID = UUID.randomUUID())
+                    longitude: Double)
 
 object MkLocation {
 
   def apply(locationReq: LocationRequest): Location = {
-    val tmp =
-      Location(locationReq.name, locationReq.latitude, locationReq.longitude)
-    Location(tmp.name, tmp.latitude, tmp.longitude, tmp.id)
+    Location(locationReq.name,
+             locationReq.id.getOrElse(UUID.randomUUID()),
+             locationReq.latitude,
+             locationReq.longitude)
   }
 
 }
 
 final case class LocationRequest(name: String,
                                  latitude: Double,
-                                 longitude: Double)
+                                 longitude: Double,
+                                 id: Option[UUID])

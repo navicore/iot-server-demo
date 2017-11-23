@@ -15,7 +15,7 @@ final case class Device(name: String,
 object MkDevice {
 
   def apply(deviceReq: DeviceRequest): Device = {
-    val tmp = Device(deviceReq.name)
+    val tmp = Device(deviceReq.name, deviceReq.id.getOrElse(UUID.randomUUID()))
     Device(tmp.name,
            tmp.id,
            tmp.created,
@@ -28,6 +28,7 @@ object MkDevice {
 }
 
 final case class DeviceRequest(name: String,
+                               id: Option[UUID],
                                location: Option[UUID],
                                kind: Option[Int],
                                desc: Option[String],
