@@ -6,10 +6,12 @@ import akka.actor._
 import akka.util.Timeout
 import com.typesafe.scalalogging.LazyLogging
 import onextent.akka.kafka.demo.actors.DeviceService._
+import onextent.akka.kafka.demo.actors.LocationService.AddDevice
 import onextent.akka.kafka.demo.models.Device
 
 object DeviceService {
-  def props(implicit timeout: Timeout) = Props(new DeviceService)
+  def props(locationService: ActorRef)(implicit timeout: Timeout) =
+    Props(new DeviceService(locationService))
   def name = "deviceService"
 
   final case class Get(id: UUID)
@@ -17,11 +19,14 @@ object DeviceService {
   final case class AlreadyExists(device: Device)
 }
 
-class DeviceService(implicit timeout: Timeout) extends Actor with LazyLogging {
+class DeviceService(locationService: ActorRef)(implicit timeout: Timeout)
+    extends Actor
+    with LazyLogging {
 
   def create(actorId: String, device: Device): Unit = {
     context.actorOf(DeviceActor.props(device), actorId)
     sender() ! device
+    locationService ! AddDevice(device)
   }
 
   override def receive: PartialFunction[Any, Unit] = {

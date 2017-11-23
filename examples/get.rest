@@ -8,13 +8,16 @@ GET /api/device/32bebf5d-2773-4725-8e26-6c9aa2f7e2ae
 --
 POST /api/device
 {
-    "name": "navicore",
+    "name": "my device 2",
     "kind": 99,
-    "desc": "important gadget"
+    "location": "3400078d-9f5f-4ab2-924d-4d5124ed1d6b",
+    "desc": "another important gadget"
 }
 
 --
-GET /api/location/7206fad2-5aaf-41a0-9f00-42f0d9b1e6a2
+GET /api/location/3400078d-9f5f-4ab2-924d-4d5124ed1d6b
+--
+GET /api/location/3400078d-9f5f-4ab2-924d-4d5124ed1d6b/devices
 
 --
 POST /api/location

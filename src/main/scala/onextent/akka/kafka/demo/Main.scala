@@ -12,11 +12,11 @@ import onextent.akka.kafka.demo.http.{DeviceRoute, HttpSupport, LocationRoute}
 
 object Main extends App with LazyLogging with HttpSupport with Directives {
 
-  val deviceService: ActorRef =
-    actorSystem.actorOf(DeviceService.props(timeout), DeviceService.name)
-
   val locationService: ActorRef =
-    actorSystem.actorOf(LocationService.props(timeout), LocationService.name)
+    actorSystem.actorOf(LocationService.props, LocationService.name)
+
+  val deviceService: ActorRef =
+    actorSystem.actorOf(DeviceService.props(locationService), DeviceService.name)
 
   Consume()
 

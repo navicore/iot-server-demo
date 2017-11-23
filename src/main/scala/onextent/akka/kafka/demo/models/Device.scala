@@ -7,6 +7,7 @@ final case class Device(name: String,
                         id: UUID = UUID.randomUUID(),
                         created: ZonedDateTime =
                           ZonedDateTime.now(ZoneOffset.UTC),
+                        location: Option[UUID] = None,
                         kind: Option[Int] = None,
                         desc: Option[String] = None,
                         serial: Option[String] = None)
@@ -18,6 +19,7 @@ object MkDevice {
     Device(tmp.name,
            tmp.id,
            tmp.created,
+           deviceReq.location,
            deviceReq.kind,
            deviceReq.desc,
            deviceReq.serial)
@@ -26,6 +28,7 @@ object MkDevice {
 }
 
 final case class DeviceRequest(name: String,
-                        kind: Option[Int],
-                        desc: Option[String],
-                        serial: Option[String])
+                               location: Option[UUID],
+                               kind: Option[Int],
+                               desc: Option[String],
+                               serial: Option[String])

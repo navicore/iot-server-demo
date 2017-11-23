@@ -7,7 +7,12 @@ import akka.pattern.ask
 import com.typesafe.scalalogging.LazyLogging
 import onextent.akka.kafka.demo.actors.LocationService._
 import onextent.akka.kafka.demo.models.functions.JsonSupport
-import onextent.akka.kafka.demo.models.{Location, LocationRequest, MkLocation}
+import onextent.akka.kafka.demo.models.{
+  Device,
+  Location,
+  LocationRequest,
+  MkLocation
+}
 import spray.json._
 
 import scala.concurrent.Future
@@ -19,23 +24,40 @@ object LocationRoute
     with HttpSupport {
 
   def apply(service: ActorRef): Route =
-    path(urlpath / "location" / JavaUUID) { id =>
+    path(urlpath / "location" / JavaUUID / "devices") { id =>
       get {
-        val f: Future[Any] = service ask Get(id)
+        val f: Future[Any] = service ask GetDevices(id)
         onSuccess(f) { (r: Any) =>
           {
             r match {
-              case location: Location =>
+              case devices: List[Device @unchecked] =>
                 complete(
                   HttpEntity(ContentTypes.`application/json`,
-                             location.toJson.prettyPrint))
+                             devices.toJson.prettyPrint))
               case _ =>
-                complete(StatusCodes.NotFound)
+                complete(StatusCodes.InternalServerError)
             }
           }
         }
       }
     } ~
+      path(urlpath / "location" / JavaUUID) { id =>
+        get {
+          val f: Future[Any] = service ask Get(id)
+          onSuccess(f) { (r: Any) =>
+            {
+              r match {
+                case location: Location =>
+                  complete(
+                    HttpEntity(ContentTypes.`application/json`,
+                               location.toJson.prettyPrint))
+                case _ =>
+                  complete(StatusCodes.NotFound)
+              }
+            }
+          }
+        }
+      } ~
       path(urlpath / "location") {
         post {
           decodeRequest {
