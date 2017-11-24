@@ -12,7 +12,7 @@ import onextent.akka.kafka.demo.Conf._
 
 import scala.concurrent.Future
 
-object Consume extends LazyLogging {
+object ObservationPipeline extends LazyLogging {
 
   def apply(deviceService: ActorRef, locationService: ActorRef)(implicit timeout: Timeout): Future[Done] = {
     Consumer

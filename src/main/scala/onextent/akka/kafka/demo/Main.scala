@@ -6,7 +6,7 @@ import akka.http.scaladsl.server.Directives
 import ch.megard.akka.http.cors.scaladsl.CorsDirectives._
 import com.typesafe.scalalogging.LazyLogging
 import onextent.akka.kafka.demo.Conf._
-import onextent.akka.kafka.demo.actors.streams.Consume
+import onextent.akka.kafka.demo.actors.streams.ObservationPipeline
 import onextent.akka.kafka.demo.actors.{DeviceService, LocationService}
 import onextent.akka.kafka.demo.http.functions.HttpSupport
 import onextent.akka.kafka.demo.http.{DeviceRoute, LocationRoute, ObservationRoute}
@@ -19,7 +19,7 @@ object Main extends App with LazyLogging with HttpSupport with Directives {
   val deviceService: ActorRef =
     actorSystem.actorOf(DeviceService.props(locationService), DeviceService.name)
 
-  Consume(deviceService, locationService)
+  ObservationPipeline(deviceService, locationService)
 
   val route =
     HealthCheck ~

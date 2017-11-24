@@ -31,7 +31,7 @@ class LocationActor(location: Location) extends Actor with LazyLogging {
       sender() ! location
 
     case GetAssessments =>
-      sender() ! assessments
+      sender() ! assessments.values.toList
 
     case GetDevices =>
       sender() ! devices
