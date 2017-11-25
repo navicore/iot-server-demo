@@ -6,7 +6,7 @@ import akka.actor._
 import akka.util.Timeout
 import com.typesafe.scalalogging.LazyLogging
 import onextent.akka.kafka.demo.actors.LocationService._
-import onextent.akka.kafka.demo.models.{Device, Location}
+import onextent.akka.kafka.demo.models.{Assessment, Device, Location}
 
 object LocationService {
   def props(implicit timeout: Timeout) = Props(new LocationService)
@@ -15,6 +15,7 @@ object LocationService {
   final case class Get(id: UUID)
   final case class GetDevices(id: UUID)
   final case class GetAssessments(id: UUID)
+  final case class SetAssessment(assessment: Assessment, locationId: UUID)
   final case class Create(location: Location)
   final case class AlreadyExists(location: Location)
   final case class AddDevice(device: Device)
@@ -47,6 +48,10 @@ class LocationService(implicit timeout: Timeout) extends Actor with LazyLogging 
         .fold(create(location.id.toString, location))(_ => {
           sender() ! AlreadyExists(location)
         })
+
+    case SetAssessment(assessment, locationId) =>
+      def notFound(): Unit = logger.warn(s"location $locationId not found for assessment $assessment update")
+      context.child(locationId.toString).fold(notFound())(_ forward assessment)
 
     case AddDevice(device) =>
       device.location match {

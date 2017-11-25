@@ -7,7 +7,7 @@ import onextent.akka.kafka.demo.models.Observation
 import onextent.akka.kafka.demo.models.functions.JsonSupport
 import spray.json._
 
-object ExtractObservation extends LazyLogging with Conf with JsonSupport {
+object ExtractObservations extends LazyLogging with Conf with JsonSupport {
 
   def apply(): CommittableMessage[Array[Byte], String] => (Observation,
                                                            CommittableMessage[

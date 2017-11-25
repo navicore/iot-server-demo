@@ -31,7 +31,7 @@ object Window {
 sealed trait WindowCommand {
   def w: Window
 }
-case class AggregateEventData(w: Window, eventCount: Int)
+case class AggregateEventData(w: Window, eventCount: Int, forId: UUID = UUID.randomUUID())
 case class OpenWindow(w: Window) extends WindowCommand
 case class CloseWindow(w: Window) extends WindowCommand
 case class AddToWindow(ev: (Observation, UUID), w: Window) extends WindowCommand
