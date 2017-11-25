@@ -1,12 +1,14 @@
-package onextent.akka.kafka.demo.actors.streams
+package onextent.akka.kafka.demo.actors.streams.functions
 
 import java.util.UUID
 
 import onextent.akka.kafka.demo.models.Device
 
+/**
+  * mapConcat helper to drop records that have no location
+  */
 object FilterDevicesWithLocations {
 
-  // mapConcat helper (needs a better name or should encapsulate mapConcat)
   def apply[T](): ((T, Device, _)) => List[(T, UUID)] = t => {
     t._2.location match {
       case Some(location) =>

@@ -1,11 +1,13 @@
 package onextent.akka.kafka.demo.models
 
+import java.time.{ZoneOffset, ZonedDateTime}
 import java.util.UUID
 
 case class Location(name: String,
                     id: UUID = UUID.randomUUID(),
                     latitude: Double,
-                    longitude: Double)
+                    longitude: Double,
+                    created: ZonedDateTime = ZonedDateTime.now(ZoneOffset.UTC))
 
 object MkLocation {
 

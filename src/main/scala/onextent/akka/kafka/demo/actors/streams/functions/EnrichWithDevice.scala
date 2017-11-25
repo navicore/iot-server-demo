@@ -1,4 +1,4 @@
-package onextent.akka.kafka.demo.actors.streams
+package onextent.akka.kafka.demo.actors.streams.functions
 
 import akka.actor.ActorRef
 import akka.kafka.ConsumerMessage._

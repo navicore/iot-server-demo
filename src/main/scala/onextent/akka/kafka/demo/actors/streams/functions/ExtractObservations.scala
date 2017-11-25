@@ -1,4 +1,4 @@
-package onextent.akka.kafka.demo.actors.streams
+package onextent.akka.kafka.demo.actors.streams.functions
 
 import akka.kafka.ConsumerMessage._
 import com.typesafe.scalalogging.LazyLogging
