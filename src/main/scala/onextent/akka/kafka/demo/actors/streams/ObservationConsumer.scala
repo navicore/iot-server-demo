@@ -19,10 +19,10 @@ object ObservationConsumer extends LazyLogging with Conf with JsonSupport {
   def apply(deviceService: ActorRef)(
       implicit timeout: Timeout,
       ec: ExecutionContext): CommittableMessage[Array[Byte], String] => Future[
-    CommittableMessage[Array[Byte], String]] = {
+    (Observation, CommittableMessage[Array[Byte], String])] = {
 
     (msg: CommittableMessage[Array[Byte], String]) =>
-      val promise = Promise[CommittableMessage[Array[Byte], String]]()
+      val promise = Promise[(Observation, CommittableMessage[Array[Byte], String])]()
 
       val observation: Observation =
         msg.record.value().parseJson.convertTo[Observation]
@@ -40,10 +40,10 @@ object ObservationConsumer extends LazyLogging with Conf with JsonSupport {
 
       f onComplete {
         case Success(_) =>
-          promise.success(msg)
+          promise.success((observation, msg))
         case Failure(e) =>
           logger.warn(s"can not update device assessment $assessment: $e")
-          promise.success(msg)
+          promise.success((observation, msg))
       }
 
       promise.future
