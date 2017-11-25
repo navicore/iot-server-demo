@@ -1,5 +1,7 @@
 package onextent.akka.kafka.demo.actors.streams
 
+import java.time.{Instant, ZoneOffset, ZonedDateTime}
+
 import akka.actor.ActorRef
 import akka.kafka.Subscriptions
 import akka.kafka.scaladsl.Consumer
@@ -7,10 +9,7 @@ import akka.util.Timeout
 import com.typesafe.scalalogging.LazyLogging
 import onextent.akka.kafka.demo.Conf.{consumerSettings, parallelism, topic, _}
 import onextent.akka.kafka.demo.actors.streams.windows._
-import onextent.akka.kafka.demo.models.Observation
-
-import scala.concurrent.Promise
-import scala.util.{Failure, Success}
+import onextent.akka.kafka.demo.models.{Assessment, Device, Observation}
 
 object ObservationPipeline extends LazyLogging {
 
@@ -18,28 +17,13 @@ object ObservationPipeline extends LazyLogging {
       implicit timeout: Timeout): Unit = {
 
     val eventStream = Consumer
-    // read bytes
       .committableSource(consumerSettings, Subscriptions.topics(topic))
-      // extract Observation and msg Actors
-      .mapAsync(parallelism) {
-        ObservationConsumer(deviceService)
-      }
-      // commit offset so we don't reread if we crash
-      .mapAsync(parallelism) { t =>
-        val promise = Promise[Observation]()
-        t._2.committableOffset.commitScaladsl().onComplete {
-          case Success(_) => promise.success(t._1)
-          case Failure(e) =>
-            logger.error(s"commit to kafka: $e")
-            promise.failure(e)
-        }
-        promise.future
-      }
-      // process observations in windows
-      .map { o =>
-        logger.debug(s"ejs o is $o")
-        o
-      }
+      .map(ExtractObservation())
+      .mapAsync(parallelism) { EnrichWithDevice(deviceService) }
+      .mapAsync(parallelism) { CommitKafkaOffset[Observation, Device]() }
+      .mapConcat (FilterDevicesWithLocations())
+
+    // process observations in windows
 
     val commandStream = eventStream.statefulMapConcat { () =>
       val generator = new CommandGenerator()
@@ -47,6 +31,10 @@ object ObservationPipeline extends LazyLogging {
         generator.forEvent(ev)
     }
 
+    // ejs todo extra groupBy for locations
+    // ejs todo extra groupBy for locations
+    // ejs todo extra groupBy for locations
+    // ejs todo extra groupBy for locations
     val windowStreams = commandStream
       .groupBy(64, command => command.w)
       .takeWhile(!_.isInstanceOf[CloseWindow])
@@ -57,12 +45,20 @@ object ObservationPipeline extends LazyLogging {
         case (agg, AddToWindow(_, _)) =>
           agg.copy(eventCount = agg.eventCount + 1)
       }
+      .map(agg => {
+        val from: ZonedDateTime = ZonedDateTime.from(
+          Instant.ofEpochMilli(agg.w._1).atOffset(ZoneOffset.UTC))
+        val name = s"count ${from.getHour}:${from.getMinute}"
+        Assessment(name, agg.eventCount, from)
+      })
       .async
 
-    //val aggregatesStream = windowStreams.mergeSubstreams
     windowStreams.mergeSubstreams
-      .runForeach { agg =>
-        logger.debug(s"agg: $agg")
+      .runForeach { a =>
+        logger.debug(s"assessment: $a")
+      // deviceService ! SetAssessment(a, SOME ID)
       }
+
   }
+
 }

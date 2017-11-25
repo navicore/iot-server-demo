@@ -1,5 +1,7 @@
 package onextent.akka.kafka.demo.actors.streams.windows
 
+import java.util.UUID
+
 import com.typesafe.scalalogging.LazyLogging
 import onextent.akka.kafka.demo.actors.streams.windows.Window.Window
 import onextent.akka.kafka.demo.models.Observation
@@ -12,8 +14,8 @@ object Window {
 
   type Window = (Long, Long)
 
-  val WindowLength: Long = 10.seconds.toMillis
-  val WindowStep: Long =  1.second .toMillis
+  val WindowLength: Long = 10.minutes.toMillis
+  val WindowStep: Long =  1.minute .toMillis
   val WindowsPerEvent: Int = (WindowLength / WindowStep).toInt
 
   def windowsFor(ts: Long): Set[Window] = {
@@ -32,20 +34,20 @@ sealed trait WindowCommand {
 case class AggregateEventData(w: Window, eventCount: Int)
 case class OpenWindow(w: Window) extends WindowCommand
 case class CloseWindow(w: Window) extends WindowCommand
-case class AddToWindow(ev: Observation, w: Window) extends WindowCommand
+case class AddToWindow(ev: (Observation, UUID), w: Window) extends WindowCommand
 
 class CommandGenerator extends LazyLogging {
-  private val MaxDelay = 5.seconds.toMillis
+  private val MaxDelay = 30.seconds.toMillis
   private var watermark = 0L
   private val openWindows = mutable.Set[Window]()
 
-  def forEvent(ev: Observation): List[WindowCommand] = {
-    watermark = math.max(watermark, ev.datetime.toInstant.toEpochMilli - MaxDelay)
-    if (ev.datetime.toInstant.toEpochMilli < watermark) {
-      logger.warn(s"Dropping event with timestamp: ${ev.datetime}")
+  def forEvent(ev: (Observation, UUID)): List[WindowCommand] = {
+    watermark = math.max(watermark, ev._1.datetime.toInstant.toEpochMilli - MaxDelay)
+    if (ev._1.datetime.toInstant.toEpochMilli < watermark) {
+      logger.warn(s"Dropping event with timestamp: ${ev._1.datetime}")
       Nil
     } else {
-      val eventWindows = Window.windowsFor(ev.datetime.toInstant.toEpochMilli)
+      val eventWindows = Window.windowsFor(ev._1.datetime.toInstant.toEpochMilli)
 
       val closeCommands = openWindows.flatMap { ow =>
         if (!eventWindows.contains(ow) && ow._2 < watermark) {
