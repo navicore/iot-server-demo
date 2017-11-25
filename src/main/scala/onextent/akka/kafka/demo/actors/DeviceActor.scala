@@ -10,7 +10,7 @@ object DeviceActor {
   def props(device: Device)(implicit timeout: Timeout) =
     Props(new DeviceActor(device))
   final case class Get()
-  final case class Ack()
+  final case class Ack(device: Device)
   final case class GetAssessments()
 }
 
@@ -22,7 +22,7 @@ class DeviceActor(device: Device) extends Actor with LazyLogging {
 
     case assessment: Assessment =>
       context become hasState(assessments + (assessment.name -> assessment))
-      sender() ! Ack()
+      sender() ! Ack(device)
 
     case Get =>
       sender() ! device

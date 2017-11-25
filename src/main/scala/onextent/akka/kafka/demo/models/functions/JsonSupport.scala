@@ -25,7 +25,7 @@ trait JsonSupport extends SprayJsonSupport with DefaultJsonProtocol {
   }
 
   implicit object ZonedDateTime extends JsonFormat[ZonedDateTime] {
-    def write(dt: ZonedDateTime): JsValue = JsString(dt.toString)
+    def write(dt: ZonedDateTime): JsValue = JsString(dt.toString) //ejs not formatting right
     def read(value: JsValue): ZonedDateTime = {
       value match {
         case JsString(dt) => java.time.ZonedDateTime.ofInstant(parse8601(dt).toInstant, ZoneOffset.UTC)
@@ -58,7 +58,7 @@ trait JsonSupport extends SprayJsonSupport with DefaultJsonProtocol {
   implicit val assessmentFormat: RootJsonFormat[Assessment] = jsonFormat4(
     Assessment)
 
-  implicit val locationFormat: RootJsonFormat[Location] = jsonFormat4(
+  implicit val locationFormat: RootJsonFormat[Location] = jsonFormat5(
     Location)
 
   implicit val locationReqFormat: RootJsonFormat[LocationRequest] = jsonFormat4(LocationRequest)

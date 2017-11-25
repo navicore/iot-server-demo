@@ -13,6 +13,15 @@ POST /api/location
 }
 
 --
+POST /api/location
+{
+    "name": "son of naviland",
+    "id": "3ddc00b2-5425-47a8-bb87-911942c49881",
+    "latitude": 0.2,
+    "longitude": 0.3
+}
+
+--
 POST /api/device
 {
     "name": "my device 1",
@@ -34,8 +43,8 @@ POST /api/device
 --
 POST /api/observation
 {
-    "name": "oil_temp",
-    "value": 10.23,
+    "name": "water_level",
+    "value": 1.23,
     "deviceId": "479d2b95-0b62-41ff-8c79-f1d13442a687"
 }
 
@@ -50,6 +59,9 @@ GET /api/location/2ddc00b2-5425-47a8-bb87-911942c49886
 
 --
 GET /api/location/2ddc00b2-5425-47a8-bb87-911942c49886/assessments
+
+--
+GET /api/location/3ddc00b2-5425-47a8-bb87-911942c49881/assessments
 
 --
 GET /api/location/2ddc00b2-5425-47a8-bb87-911942c49886/devices
