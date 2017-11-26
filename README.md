@@ -1,7 +1,8 @@
 Akka HTTP Kafka Demo
 ---
 
-## A POC Experiment -don't take this code too seriously - I'm just exploring.
+## A POC Experiment
+### don't take this code too seriously
 
 A system of Akka actors that maintain device, location, and fleet state.
 
