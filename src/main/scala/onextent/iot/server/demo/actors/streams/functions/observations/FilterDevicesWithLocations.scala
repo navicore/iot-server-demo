@@ -1,4 +1,4 @@
-package onextent.iot.server.demo.actors.streams.functions
+package onextent.iot.server.demo.actors.streams.functions.observations
 
 import akka.kafka.ConsumerMessage.CommittableMessage
 import onextent.iot.server.demo.models.{Device, EnrichedAssessment}

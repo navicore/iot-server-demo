@@ -9,6 +9,7 @@ import akka.util.Timeout
 import com.typesafe.scalalogging.LazyLogging
 import onextent.iot.server.demo.Conf._
 import onextent.iot.server.demo.actors.streams.functions._
+import onextent.iot.server.demo.actors.streams.functions.observations.{EnrichWithDevice, ExtractObservations, FilterDevicesWithLocations}
 
 object ProcessDeviceAssessments extends LazyLogging {
 
@@ -16,6 +17,8 @@ object ProcessDeviceAssessments extends LazyLogging {
       implicit timeout: Timeout): Unit = {
 
     // read from Kafka and enrich
+
+    /*
 
     val eventStream = Consumer
       .committableSource(consumerSettings, Subscriptions.topics(observationsTopic))
@@ -49,12 +52,13 @@ object ProcessDeviceAssessments extends LazyLogging {
     // convert to assessments and send them to location actors
 
     windowStreams.mergeSubstreams
-      .mapConcat(MakeAssessments())
+      .mapConcat(AggregatesToAssessments())
       .mapAsync(parallelism)(UpdateLocationActor(locationService))
       .runForeach { ev =>
         logger.debug(s"assessment: $ev")
       }
 
+     */
   }
 
 }

@@ -5,7 +5,7 @@ import java.util.UUID
 
 import onextent.iot.server.demo.models.Assessment
 
-object MakeAssessments {
+object AggregatesToAssessments {
 
   def apply()(agg: AggregateEventData): List[(Assessment, UUID)] = {
 
