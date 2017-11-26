@@ -7,8 +7,7 @@ import akka.kafka.Subscriptions
 import akka.kafka.scaladsl.Consumer
 import akka.util.Timeout
 import com.typesafe.scalalogging.LazyLogging
-import onextent.akka.kafka.demo.Conf.{consumerSettings, parallelism, topic, _}
-import onextent.akka.kafka.demo.actors.LocationService.SetAssessment
+import onextent.akka.kafka.demo.Conf._
 import onextent.akka.kafka.demo.actors.streams.functions._
 
 object ObservationPipeline extends LazyLogging {
@@ -16,13 +15,17 @@ object ObservationPipeline extends LazyLogging {
   def apply(deviceService: ActorRef, locationService: ActorRef)(
       implicit timeout: Timeout): Unit = {
 
+    // read from Kafka and enrich
+
     val eventStream = Consumer
       .committableSource(consumerSettings, Subscriptions.topics(topic))
       .map(ExtractObservations())
       .mapAsync(parallelism) { EnrichWithDevice(deviceService) }
       .mapAsync(parallelism) { CommitKafkaOffset() }
       .mapConcat(FilterDevicesWithLocations())
-
+      .recover {
+        case e => throw e
+      }
     // insert window open and close commands
 
     val commandStream = eventStream.statefulMapConcat { () =>
@@ -49,9 +52,9 @@ object ObservationPipeline extends LazyLogging {
 
     windowStreams.mergeSubstreams
       .mapConcat(MakeAssessments())
+      .mapAsync(parallelism)(UpdateLocationActor(locationService))
       .runForeach { ev =>
         logger.debug(s"assessment: $ev")
-        locationService ! SetAssessment(ev._1, ev._2)
       }
 
   }

@@ -44,7 +44,6 @@ object EnrichWithDevice extends LazyLogging with Conf with JsonSupport {
             }
           case Failure(e) =>
             logger.warn(s"can not update device assessment $assessment: $e")
-            //promise.success((observation, msg))
             promise.failure(e)
         }
 
