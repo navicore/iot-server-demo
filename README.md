@@ -18,7 +18,7 @@ All current assessments at the device level are available from the device actor.
 
 All current assessments at the location level are available from the location actor for 24 hours.
 
-The windowing code is based on Software Mill's great [post about Akka Streams and windowing].
+The windowing code is based on Software Mill's excellent [post about Akka Streams and windowing].
 
 ### To Run
 
