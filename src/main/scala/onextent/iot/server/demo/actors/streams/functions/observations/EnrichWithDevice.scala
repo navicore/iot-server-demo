@@ -16,18 +16,18 @@ import scala.util.{Failure, Success}
 
 object EnrichWithDevice extends LazyLogging with Conf with JsonSupport {
 
-  def apply(deviceService: ActorRef)(implicit timeout: Timeout,
-                                     ec: ExecutionContext)
-    : ((Observation, CommittableMessage[Array[Byte], String])) => Future[
-      (EnrichedAssessment[Device], CommittableMessage[Array[Byte], String])] = {
+  def apply[K, V](deviceService: ActorRef)(implicit timeout: Timeout,
+                                           ec: ExecutionContext)
+    : ((Observation, CommittableMessage[K, V])) => Future[
+      (EnrichedAssessment[Device], CommittableMessage[K, V])] = {
 
-    (x: (Observation, CommittableMessage[Array[Byte], String])) =>
+    (x: (Observation, CommittableMessage[K, V])) =>
       {
         val ob = x._1
         val msg = x._2
 
-        val promise = Promise[(EnrichedAssessment[Device],
-                               CommittableMessage[Array[Byte], String])]()
+        val promise =
+          Promise[(EnrichedAssessment[Device], CommittableMessage[K, V])]()
 
         val assessment = Assessment(ob.name, ob.value)
 

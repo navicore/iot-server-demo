@@ -55,14 +55,10 @@ trait JsonSupport extends SprayJsonSupport with DefaultJsonProtocol {
     }
   }
 
-  //implicit val deviceFormat: JsonFormat[Device] = lazyFormat(jsonFormat7(Device))
-  implicit val eaFormat: JsonFormat[EnrichedAssessment[Device]] = lazyFormat(jsonFormat2(EnrichedAssessment[Device]))
+  implicit val eadFormat: JsonFormat[EnrichedAssessment[Device]] = lazyFormat(jsonFormat2(EnrichedAssessment[Device]))
 
   implicit val assessmentFormat: RootJsonFormat[Assessment] = jsonFormat4(
     Assessment)
-
-//  implicit val eAntFormat: RootJsonFormat[EnrichedAssessment[Device]] = jsonFormat2(
-//    EnrichedAssessment[Device])
 
   implicit val locationFormat: RootJsonFormat[Location] = jsonFormat5(
     Location)
