@@ -34,6 +34,6 @@ and the next one is started.
   * AUTH
   * HTTP2
 
---
-[windows]: https://softwaremill.com/windowing-data-in-akka-streams/
+
+[windows with watermarking]: https://softwaremill.com/windowing-data-in-akka-streams/
 
