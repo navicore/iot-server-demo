@@ -5,8 +5,7 @@ import akka.util.Timeout
 import com.typesafe.scalalogging.LazyLogging
 import onextent.iot.server.demo.actors.LocationActor.{Ack, Get, GetAssessments, GetDevices}
 import onextent.iot.server.demo.actors.LocationService.AddDevice
-import onextent.iot.server.demo.models.Assessment
-import onextent.iot.server.demo.models.{Device, Location}
+import onextent.iot.server.demo.models._
 
 object LocationActor {
   def props(location: Location)(implicit timeout: Timeout) =

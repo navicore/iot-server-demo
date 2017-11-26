@@ -41,7 +41,9 @@ object ProcessDeviceAssessments extends LazyLogging {
         // always filtered out by takeWhile
         case (agg, CloseWindow(_)) => agg
         case (agg, AddToWindow(ev, _)) =>
-          agg.copy(values = ev._1.assessment.value :: agg.values)
+          agg.copy(values = ev match {
+            case (holder, _) => holder.assessment.value :: agg.values
+          })
       }
       .async
 
