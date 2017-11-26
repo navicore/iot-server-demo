@@ -38,7 +38,7 @@ object Conf extends Conf with LazyLogging {
                      new StringDeserializer)
       .withBootstrapServers(bootstrap)
       .withGroupId(consumerGroup)
-      .withProperty(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "latest")
+      .withProperty(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, offsetResetDefault)
 
   val producerSettings: ProducerSettings[Array[Byte], String] =
     ProducerSettings(actorSystem, new ByteArraySerializer, new StringSerializer)
@@ -58,6 +58,8 @@ trait Conf {
   val deviceAssessmentsTopic: String = conf.getString("kafka.topics.deviceAssessments")
   val locationAssessmentsTopic: String = conf.getString("kafka.topics.locationAssessments")
   val fleetAssessmentsTopic: String = conf.getString("kafka.topics.fleetAssessments")
+
+  val offsetResetDefault: String = conf.getString("kafka.offsetResetDefault")
 
   val parallelism: Int = conf.getInt("kafka.parallelism")
 
