@@ -1,20 +1,22 @@
 package onextent.iot.server.demo.actors.streams.functions
 
-import java.util.UUID
-
-import onextent.iot.server.demo.models.Device
+import akka.kafka.ConsumerMessage.CommittableMessage
+import onextent.iot.server.demo.models.{Device, EnrichedAssessment}
 
 /**
   * mapConcat helper to drop records that have no location
   */
 object FilterDevicesWithLocations {
 
-  def apply[T](): ((T, Device, _)) => List[(T, UUID)] = t => {
-    t._2.location match {
-      case Some(location) =>
-        List((t._1, location))
+  def apply[K,V](): ((EnrichedAssessment[Device], CommittableMessage[K, V])) => List[
+    (EnrichedAssessment[Device], CommittableMessage[K, V])] = t => {
+    t._1.enrichment.location match {
+      case Some(_) =>
+        List(t)
       case _ =>
+        t._2.committableOffset.commitScaladsl()
         List()
     }
   }
+
 }

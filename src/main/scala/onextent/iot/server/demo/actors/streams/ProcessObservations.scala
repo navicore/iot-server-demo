@@ -3,14 +3,40 @@ package onextent.iot.server.demo.actors.streams
 import java.util.UUID
 
 import akka.actor.ActorRef
-import akka.kafka.Subscriptions
-import akka.kafka.scaladsl.Consumer
+import akka.kafka.ConsumerMessage.{CommittableMessage, CommittableOffset}
+import akka.kafka.{ProducerMessage, Subscriptions}
+import akka.kafka.scaladsl.{Consumer, Producer}
 import akka.util.Timeout
 import com.typesafe.scalalogging.LazyLogging
-import onextent.iot.server.demo.actors.streams.functions._
+import onextent.iot.server.demo.Conf
 import onextent.iot.server.demo.Conf._
+import onextent.iot.server.demo.actors.streams.functions._
+import onextent.iot.server.demo.models.{Device, EnrichedAssessment}
+import org.apache.kafka.clients.producer.ProducerRecord
+import onextent.iot.server.demo.models.functions.JsonSupport
+import spray.json._
 
-object ObservationPipeline extends LazyLogging {
+object ForwardableMessage extends LazyLogging with Conf {
+
+  def apply[K,V](ev: (EnrichedAssessment[Device], CommittableMessage[K,V]))
+    : ProducerMessage.Message[Array[Byte], String, CommittableOffset] = {
+
+    val ea = ev._1
+    val msg = ev._2
+
+    ProducerMessage.Message(
+      new ProducerRecord[Array[Byte], String](
+        deviceAssessmentsTopic,
+        ea.enrichment.location.toString.getBytes("UTF8"),
+        ea.enrichment.toJson.prettyPrint
+      ),
+      msg.committableOffset
+    )
+
+  }
+}
+
+object ProcessObservations extends LazyLogging {
 
   def apply(deviceService: ActorRef, locationService: ActorRef)(
       implicit timeout: Timeout): Unit = {
@@ -23,6 +49,10 @@ object ObservationPipeline extends LazyLogging {
       .mapAsync(parallelism) { EnrichWithDevice(deviceService) }
       .mapAsync(parallelism) { CommitKafkaOffset() }
       .mapConcat(FilterDevicesWithLocations())
+      .map { ForwardableMessage(_) }
+      .runWith(Producer.commitableSink(producerSettings))
+
+    /*
 
     // insert window open and close commands
 
@@ -55,6 +85,7 @@ object ObservationPipeline extends LazyLogging {
         logger.debug(s"assessment: $ev")
       }
 
+     */
   }
 
 }

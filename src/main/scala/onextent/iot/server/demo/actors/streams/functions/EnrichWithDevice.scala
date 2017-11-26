@@ -9,7 +9,7 @@ import onextent.iot.server.demo.Conf
 import onextent.iot.server.demo.actors.DeviceActor.Ack
 import onextent.iot.server.demo.actors.DeviceService.SetAssessment
 import onextent.iot.server.demo.models.functions.JsonSupport
-import onextent.iot.server.demo.models.{Assessment, Device, Observation}
+import onextent.iot.server.demo.models.{Assessment, Device, EnrichedAssessment, Observation}
 
 import scala.concurrent.{ExecutionContext, Future, Promise}
 import scala.util.{Failure, Success}
@@ -17,17 +17,16 @@ import scala.util.{Failure, Success}
 object EnrichWithDevice extends LazyLogging with Conf with JsonSupport {
 
   def apply(deviceService: ActorRef)(implicit timeout: Timeout,
-                                     ec: ExecutionContext): (
-      (Observation, CommittableMessage[Array[Byte], String])) => Future[
-    (Observation, Device, CommittableMessage[Array[Byte], String])] = {
+                                     ec: ExecutionContext)
+    : ((Observation, CommittableMessage[Array[Byte], String])) => Future[
+      (EnrichedAssessment[Device], CommittableMessage[Array[Byte], String])] = {
 
     (x: (Observation, CommittableMessage[Array[Byte], String])) =>
       {
         val ob = x._1
         val msg = x._2
 
-        val promise = Promise[(Observation,
-                               Device,
+        val promise = Promise[(EnrichedAssessment[Device],
                                CommittableMessage[Array[Byte], String])]()
 
         val assessment = Assessment(ob.name, ob.value)
@@ -38,7 +37,8 @@ object EnrichWithDevice extends LazyLogging with Conf with JsonSupport {
           case Success(r: Any) =>
             r match {
               case Ack(device) =>
-                promise.success((ob, device, msg))
+                val enriched = EnrichedAssessment(assessment, device)
+                promise.success((enriched, msg))
               case (ack) =>
                 promise.failure(new Exception(ack.toString))
             }

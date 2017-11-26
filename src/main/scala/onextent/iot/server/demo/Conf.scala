@@ -53,7 +53,12 @@ trait Conf {
   val appName: String = conf.getString("main.appName")
   val bootstrap: String = conf.getString("kafka.bootstrap")
   val consumerGroup: String = conf.getString("kafka.consumerGroup")
-  val topic: String = conf.getString("kafka.topic")
+
+  val observationsTopic: String = conf.getString("kafka.topics.observations")
+  val deviceAssessmentsTopic: String = conf.getString("kafka.topics.deviceAssessments")
+  val locationAssessmentsTopic: String = conf.getString("kafka.topics.locationAssessments")
+  val fleetAssessmentsTopic: String = conf.getString("kafka.topics.fleetAssessments")
+
   val parallelism: Int = conf.getInt("kafka.parallelism")
 
 }

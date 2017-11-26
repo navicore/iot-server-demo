@@ -7,10 +7,10 @@ import akka.kafka.Subscriptions
 import akka.kafka.scaladsl.Consumer
 import akka.util.Timeout
 import com.typesafe.scalalogging.LazyLogging
-import onextent.iot.server.demo.actors.streams.functions._
 import onextent.iot.server.demo.Conf._
+import onextent.iot.server.demo.actors.streams.functions._
 
-object ObservationPipeline extends LazyLogging {
+object ProcessDeviceAssessments extends LazyLogging {
 
   def apply(deviceService: ActorRef, locationService: ActorRef)(
       implicit timeout: Timeout): Unit = {
