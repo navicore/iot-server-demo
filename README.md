@@ -44,7 +44,7 @@ The windowing code is based on Software Mill's excellent [post about Akka Stream
   * Assessment - a processed observation or collection of observations
 
 ### TODO
-  * Actor Persistence
+  * Actor persistence and serialization
   * Cluster deployment with sharding and discovery
   * Move Kafka offset persistence to after the windows processing
   * AUTH
