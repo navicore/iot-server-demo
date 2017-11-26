@@ -19,6 +19,8 @@ private object ForwardableMessage
     with Conf
     with JsonSupport {
 
+  // co-locate processing by using enrichment data for partition key
+
   def apply[K, V](ev: (EnrichedAssessment[Device], CommittableMessage[K, V]))
     : ProducerMessage.Message[Array[Byte], String, CommittableOffset] = {
 
@@ -36,9 +38,9 @@ private object ForwardableMessage
 
 object ProcessObservations extends LazyLogging {
 
-  def apply(deviceService: ActorRef)(implicit timeout: Timeout): Unit = {
+  // read, enrich, and publish
 
-    // read, enrich, and publish
+  def apply(deviceService: ActorRef)(implicit timeout: Timeout): Unit = {
 
     Consumer
       .committableSource(consumerSettings,
