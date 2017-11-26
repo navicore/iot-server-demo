@@ -11,8 +11,12 @@ A system of sliding windows maintains all the observations for a location by
 observation name (ie: water_level or oil_temp, etc...).  The currently active
 window is available as it is being populated - ie: you can see all prior 10-minute
 windows as if they were tumbled with no overlap, but the current window is always
-the most recent 10 minutes - overlapping the prior window until is is complete
+the most recent 10 minutes - overlapping the prior window until it is complete
 and the next one is started.
+
+All current assessments at the device level are available from the device actor.
+
+All current assessments at the location level are available from the location actor for 24 hours.
 
 The windowing code is based on Software Mill's great [post about Akka Streams and windowing].
 
@@ -30,6 +34,7 @@ The windowing code is based on Software Mill's great [post about Akka Streams an
   * Device - a source of observations
   * Location - a collection of devices
   * Fleet - a collection of locations (tbd)
+  * Assessment - a processed observation or collection of observations
 
 ### TODO
   * Actor Persistence
