@@ -5,24 +5,28 @@ import akka.kafka.{ConsumerSettings, ProducerSettings}
 import akka.pattern.AskTimeoutException
 import akka.stream.{ActorMaterializer, ActorMaterializerSettings, Supervision}
 import com.typesafe.config.{Config, ConfigFactory}
+import com.typesafe.scalalogging.LazyLogging
 import org.apache.kafka.clients.consumer.ConsumerConfig
-import org.apache.kafka.common.serialization.{
-  ByteArrayDeserializer,
-  ByteArraySerializer,
-  StringDeserializer,
-  StringSerializer
-}
+import org.apache.kafka.common.serialization.{ByteArrayDeserializer, ByteArraySerializer, StringDeserializer, StringSerializer}
 
 import scala.concurrent.ExecutionContextExecutor
 
-object Conf extends Conf {
+object Conf extends Conf with LazyLogging {
 
   implicit val actorSystem: ActorSystem = ActorSystem("akka_kafka_demo")
   implicit val ec: ExecutionContextExecutor = actorSystem.dispatcher
 
   val decider: Supervision.Decider = {
-    case _: AskTimeoutException => Supervision.Resume
-    case _                      => Supervision.Stop
+    case _: AskTimeoutException =>
+      // might want to try harder, retry w/backoff if the actor is really supposed to be there
+      logger.warn(s"decider discarding message in order to resume")
+      Supervision.Resume
+    case e: Throwable =>
+      logger.error(s"decider can not decide: $e", e)
+      Supervision.Stop
+    case e =>
+      logger.error(s"decider can not decide: $e")
+      Supervision.Stop
   }
 
   implicit val materializer: ActorMaterializer = ActorMaterializer(

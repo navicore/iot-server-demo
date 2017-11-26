@@ -23,9 +23,7 @@ object ObservationPipeline extends LazyLogging {
       .mapAsync(parallelism) { EnrichWithDevice(deviceService) }
       .mapAsync(parallelism) { CommitKafkaOffset() }
       .mapConcat(FilterDevicesWithLocations())
-      .recover {
-        case e => throw e
-      }
+
     // insert window open and close commands
 
     val commandStream = eventStream.statefulMapConcat { () =>
