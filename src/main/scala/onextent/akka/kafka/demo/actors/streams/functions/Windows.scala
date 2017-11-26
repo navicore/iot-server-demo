@@ -31,13 +31,13 @@ object Window {
 sealed trait WindowCommand {
   def w: Window
 }
-case class AggregateEventData(w: Window, eventCount: Int, values: List[Double] = List[Double](), forId: UUID = UUID.randomUUID())
+case class AggregateEventData(w: Window, values: List[Double] = List[Double]())
 case class OpenWindow(w: Window) extends WindowCommand
 case class CloseWindow(w: Window) extends WindowCommand
 case class AddToWindow(ev: (Observation, UUID), w: Window) extends WindowCommand
 
 class CommandGenerator extends LazyLogging {
-  private val MaxDelay = 30.seconds.toMillis
+  private val MaxDelay = 10.seconds.toMillis
   private var watermark = 0L
   private val openWindows = mutable.Set[Window]()
 
