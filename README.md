@@ -20,6 +20,12 @@ All current assessments at the location level are available from the location ac
 
 The windowing code is based on Software Mill's great [post about Akka Streams and windowing].
 
+### To Run
+
+* use `https://gist.github.com/navicore/017c6ab1d735596cecc2732e2faaa0dd` to run Kafka
+* `sbt run`
+* see `examples/get.rest` for API example
+
 ### Features
   * Device twins and location twins can be inspected via an HTTP API
   * Device observations - telemetry - can be posted via HTTP
@@ -42,6 +48,7 @@ The windowing code is based on Software Mill's great [post about Akka Streams an
   * Move Kafka offset persistence to after the windows processing
   * AUTH
   * HTTP2
+  * Let observations reference devices by meaningful names (IOT devices won't like predefined UUIDs)
 
 [post about Akka Streams and windowing]: https://softwaremill.com/windowing-data-in-akka-streams/
 

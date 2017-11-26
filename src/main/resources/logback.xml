@@ -10,7 +10,7 @@
         <appender-ref ref="STDOUT"/>
     </root>
 
-    <logger name="onextent.akka" level="${LOG_LEVEL:-debug}"/>
+    <logger name="onextent" level="${LOG_LEVEL:-debug}"/>
 
 </configuration>
 
