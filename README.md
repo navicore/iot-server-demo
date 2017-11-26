@@ -22,7 +22,7 @@ The windowing code is based on Software Mill's excellent [post about Akka Stream
 
 ### To Run
 
-* use [these commands to](https://gist.github.com/navicore/017c6ab1d735596cecc2732e2faaa0dd) to run Kafka from Docker
+* use [these commands to](https://gist.github.com/navicore/017c6ab1d735596cecc2732e2faaa0dd) to run Kafka with Docker
 * `sbt run`
 * see `examples/get.rest` for API example
 * see `application.conf` for config and ENV VAR details
