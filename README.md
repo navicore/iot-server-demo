@@ -1,4 +1,6 @@
-Akka HTTP Kafka Demo
+[![Build Status](https://travis-ci.org/navicore/iot-server-demo.svg?branch=master)](https://travis-ci.org/navicore/iot-server-demo)
+
+IOT Server Demo
 ---
 
 ## A POC Experiment

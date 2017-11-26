@@ -28,7 +28,7 @@ trait KafkaProducerDirective extends LazyLogging with Directives {
   def write(obj: String, key: String): Directive1[Future[Unit]] = {
 
     val promise = Promise[Unit]()
-    val data = new ProducerRecord[String, String](topic, key, obj)
+    val data = new ProducerRecord[String, String](observationsTopic, key, obj)
 
     val cb = new Callback {
       override def onCompletion(metadata: RecordMetadata,

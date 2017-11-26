@@ -9,23 +9,17 @@ import scala.util.{Failure, Success}
 
 object CommitKafkaOffset extends LazyLogging {
 
-  def apply[A, B]()(implicit timeout: Timeout,
-                    ec: ExecutionContext): ((A,
-                                             B,
-                                             ConsumerMessage.CommittableMessage[
-                                               Array[Byte],
-                                               String])) => Future[
-    (A, B, ConsumerMessage.CommittableMessage[Array[Byte], String])] = {
+  def apply[A, K, V]()(implicit timeout: Timeout, ec: ExecutionContext)
+    : ((A, ConsumerMessage.CommittableMessage[K, V])) => Future[
+      (A, ConsumerMessage.CommittableMessage[K, V])] = {
 
-    (t: (A, B, ConsumerMessage.CommittableMessage[Array[Byte], String])) =>
+    (t: (A, ConsumerMessage.CommittableMessage[K, V])) =>
       {
 
         val promise =
-          Promise[(A,
-                   B,
-                   ConsumerMessage.CommittableMessage[Array[Byte], String])]()
+          Promise[(A, ConsumerMessage.CommittableMessage[K, V])]()
 
-        t._3.committableOffset.commitScaladsl().onComplete {
+        t._2.committableOffset.commitScaladsl().onComplete {
           case Success(_) => promise.success(t)
           case Failure(e) =>
             logger.error(s"commit to kafka: $e")

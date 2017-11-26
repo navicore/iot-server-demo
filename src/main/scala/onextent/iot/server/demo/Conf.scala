@@ -7,7 +7,12 @@ import akka.stream.{ActorMaterializer, ActorMaterializerSettings, Supervision}
 import com.typesafe.config.{Config, ConfigFactory}
 import com.typesafe.scalalogging.LazyLogging
 import org.apache.kafka.clients.consumer.ConsumerConfig
-import org.apache.kafka.common.serialization.{ByteArrayDeserializer, ByteArraySerializer, StringDeserializer, StringSerializer}
+import org.apache.kafka.common.serialization.{
+  ByteArrayDeserializer,
+  ByteArraySerializer,
+  StringDeserializer,
+  StringSerializer
+}
 
 import scala.concurrent.ExecutionContextExecutor
 
@@ -17,16 +22,25 @@ object Conf extends Conf with LazyLogging {
   implicit val ec: ExecutionContextExecutor = actorSystem.dispatcher
 
   val decider: Supervision.Decider = {
+
     case _: AskTimeoutException =>
       // might want to try harder, retry w/backoff if the actor is really supposed to be there
-      logger.warn(s"decider discarding message in order to resume")
+      logger.warn(s"decider discarding message to resume processing")
       Supervision.Resume
+
+    case e: java.text.ParseException =>
+      logger.warn(
+        s"decider discarding unparseable message to resume processing: $e")
+      Supervision.Resume
+
     case e: Throwable =>
       logger.error(s"decider can not decide: $e", e)
       Supervision.Stop
+
     case e =>
       logger.error(s"decider can not decide: $e")
       Supervision.Stop
+
   }
 
   implicit val materializer: ActorMaterializer = ActorMaterializer(
@@ -38,7 +52,7 @@ object Conf extends Conf with LazyLogging {
                      new StringDeserializer)
       .withBootstrapServers(bootstrap)
       .withGroupId(consumerGroup)
-      .withProperty(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "latest")
+      .withProperty(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, offsetResetDefault)
 
   val producerSettings: ProducerSettings[Array[Byte], String] =
     ProducerSettings(actorSystem, new ByteArraySerializer, new StringSerializer)
@@ -53,7 +67,18 @@ trait Conf {
   val appName: String = conf.getString("main.appName")
   val bootstrap: String = conf.getString("kafka.bootstrap")
   val consumerGroup: String = conf.getString("kafka.consumerGroup")
-  val topic: String = conf.getString("kafka.topic")
+
+  val observationsTopic: String = conf.getString("kafka.topics.observations")
+  val deviceAssessmentsTopic: String =
+    conf.getString("kafka.topics.deviceAssessments")
+  val locationAssessmentsTopic: String =
+    conf.getString("kafka.topics.locationAssessments")
+  val fleetAssessmentsTopic: String =
+    conf.getString("kafka.topics.fleetAssessments")
+
+  val offsetResetDefault: String = conf.getString("kafka.offsetResetDefault")
+
   val parallelism: Int = conf.getInt("kafka.parallelism")
+  val maxWindows: Int = conf.getInt("main.maxWindows")
 
 }

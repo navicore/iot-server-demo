@@ -10,7 +10,7 @@ import spray.json._
 trait JsonSupport extends SprayJsonSupport with DefaultJsonProtocol {
 
   val dateFormat = new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSX",
-    java.util.Locale.US)
+                                                  java.util.Locale.US)
   dateFormat.setTimeZone(java.util.TimeZone.getTimeZone("UTC"))
 
   def parse8601(dateString: String): java.util.Date = {
@@ -25,11 +25,14 @@ trait JsonSupport extends SprayJsonSupport with DefaultJsonProtocol {
   }
 
   implicit object ZonedDateTime extends JsonFormat[ZonedDateTime] {
-    def write(dt: ZonedDateTime): JsValue = JsString(dt.toString) //ejs not formatting right
+    def write(dt: ZonedDateTime): JsValue =
+      JsString(get8601(new Date(dt.toInstant.toEpochMilli))) // ugh.  replace SimpleDateFormat with new java.time.* stuff
     def read(value: JsValue): ZonedDateTime = {
       value match {
-        case JsString(dt) => java.time.ZonedDateTime.ofInstant(parse8601(dt).toInstant, ZoneOffset.UTC)
-        case _            => throw DeserializationException("Expected 8601")
+        case JsString(dt) =>
+          java.time.ZonedDateTime
+            .ofInstant(parse8601(dt).toInstant, ZoneOffset.UTC)
+        case _ => throw DeserializationException("Expected 8601")
       }
     }
   }
@@ -55,22 +58,26 @@ trait JsonSupport extends SprayJsonSupport with DefaultJsonProtocol {
     }
   }
 
+  implicit val eadFormat: JsonFormat[EnrichedAssessment[Device]] = lazyFormat(
+    jsonFormat2(EnrichedAssessment[Device]))
+
   implicit val assessmentFormat: RootJsonFormat[Assessment] = jsonFormat4(
     Assessment)
 
-  implicit val locationFormat: RootJsonFormat[Location] = jsonFormat5(
-    Location)
+  implicit val locationFormat: RootJsonFormat[Location] = jsonFormat5(Location)
 
-  implicit val locationReqFormat: RootJsonFormat[LocationRequest] = jsonFormat4(LocationRequest)
+  implicit val locationReqFormat: RootJsonFormat[LocationRequest] = jsonFormat4(
+    LocationRequest)
 
   implicit val deviceFormat: RootJsonFormat[Device] = jsonFormat7(Device)
 
-  implicit val deviceReqFormat: RootJsonFormat[DeviceRequest] = jsonFormat6(DeviceRequest)
+  implicit val deviceReqFormat: RootJsonFormat[DeviceRequest] = jsonFormat6(
+    DeviceRequest)
 
   implicit val observationFormat: RootJsonFormat[Observation] = jsonFormat5(
     Observation)
 
-  implicit val observationReqFormat: RootJsonFormat[ObservationRequest] = jsonFormat3(
-    ObservationRequest)
+  implicit val observationReqFormat: RootJsonFormat[ObservationRequest] =
+    jsonFormat3(ObservationRequest)
 
 }

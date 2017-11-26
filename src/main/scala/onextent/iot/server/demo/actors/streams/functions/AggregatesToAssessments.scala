@@ -3,9 +3,10 @@ package onextent.iot.server.demo.actors.streams.functions
 import java.time.{Instant, ZoneOffset, ZonedDateTime}
 import java.util.UUID
 
+import com.typesafe.scalalogging.LazyLogging
 import onextent.iot.server.demo.models.Assessment
 
-object MakeAssessments {
+object AggregatesToAssessments extends LazyLogging {
 
   def apply()(agg: AggregateEventData): List[(Assessment, UUID)] = {
 
