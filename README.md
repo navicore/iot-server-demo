@@ -19,7 +19,7 @@ and the next one is started.
     * End-to-end backpressure
     * Resume supervision strategy
     * Kafka offset persistence
-  * Sliding windows with watermarking
+  * Sliding [windows with watermarking]
 
 ### Entities
   * Observation - a named measure of something
@@ -33,3 +33,7 @@ and the next one is started.
   * Move Kafka offset persistence to after the windows processing
   * AUTH
   * HTTP2
+
+--
+[windows]: https://softwaremill.com/windowing-data-in-akka-streams/
+
