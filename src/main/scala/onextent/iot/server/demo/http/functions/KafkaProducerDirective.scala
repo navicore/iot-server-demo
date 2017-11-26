@@ -33,12 +33,14 @@ trait KafkaProducerDirective extends LazyLogging with Directives {
     val cb = new Callback {
       override def onCompletion(metadata: RecordMetadata,
                                 exception: Exception): Unit = {
-        if (exception == null) {
-          promise.success((): Unit)
-        } else {
-          logger.error(s"write to kafka $obj failed: $exception")
-          promise.failure(exception)
+        Option(exception) match {
+          case Some(_) =>
+            logger.error(s"write to kafka $obj failed: $exception")
+            promise.failure(exception)
+          case None =>
+            promise.success((): Unit)
         }
+
       }
     }
     producer.send(data, cb)

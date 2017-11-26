@@ -42,43 +42,50 @@ case class AddToWindow[K, V](
     extends WindowCommand
 
 class CommandGenerator extends LazyLogging {
-  private val MaxDelay = 10.seconds.toMillis
+  private val maxDelay = 10.seconds.toMillis
   private var watermark = 0L
   private val openWindows = mutable.Set[Window]()
 
   def forEvent[K, V](ev: (EnrichedAssessment[Device], CommittableMessage[K, V]))
     : List[WindowCommand] = {
-    watermark = math.max(
-      watermark,
-      ev._1.assessment.datetime.toInstant.toEpochMilli - MaxDelay)
-    if (ev._1.assessment.datetime.toInstant.toEpochMilli < watermark) {
-      logger.warn(
-        s"Dropping event with timestamp: ${ev._1.assessment.datetime}")
-      Nil
-    } else {
-      val eventWindows = Window.windowsFor(
-        ev._1.assessment.datetime.toInstant.toEpochMilli,
-        ev._1.assessment.name,
-        ev._1.enrichment.location.getOrElse(UUID.randomUUID()))
+    ev match {
+      case (enhancedAssessment, _) =>
 
-      val closeCommands = openWindows.flatMap { ow =>
-        if (!eventWindows.contains(ow) && ow._2 < watermark) {
-          openWindows.remove(ow)
-          Some(CloseWindow(ow))
-        } else None
-      }
+        val assessment = enhancedAssessment.assessment
 
-      val openCommands = eventWindows.flatMap { w =>
-        if (!openWindows.contains(w)) {
-          openWindows.add(w)
-          Some(OpenWindow(w))
-        } else None
-      }
+        watermark = math.max(watermark, assessment.datetime.toInstant.toEpochMilli - maxDelay)
 
-      val addCommands = eventWindows.map(w => AddToWindow(ev, w))
+        if (assessment.datetime.toInstant.toEpochMilli < watermark) {
+          logger.warn(
+            s"Dropping event with timestamp: ${assessment.datetime}")
+          Nil
+        } else {
+          val eventWindows = Window.windowsFor(
+            assessment.datetime.toInstant.toEpochMilli,
+            assessment.name,
+            enhancedAssessment.enrichment.location.getOrElse(UUID.randomUUID()))
 
-      openCommands.toList ++ closeCommands.toList ++ addCommands.toList
+          val closeCommands = openWindows.flatMap { ow =>
+            val stopTime = ow match { case (_, st, _, _) => st}
+            if (!eventWindows.contains(ow) && stopTime < watermark) {
+              openWindows.remove(ow)
+              Some(CloseWindow(ow))
+            } else None
+          }
+
+          val openCommands = eventWindows.flatMap { w =>
+            if (!openWindows.contains(w)) {
+              openWindows.add(w)
+              Some(OpenWindow(w))
+            } else None
+          }
+
+          val addCommands = eventWindows.map(w => AddToWindow(ev, w))
+
+          openCommands.toList ++ closeCommands.toList ++ addCommands.toList
+        }
     }
+
   }
 
 }

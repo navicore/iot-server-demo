@@ -11,8 +11,7 @@ import onextent.iot.server.demo.actors.DeviceService.SetAssessment
 import onextent.iot.server.demo.models.functions.JsonSupport
 import onextent.iot.server.demo.models.{Assessment, Device, EnrichedAssessment, Observation}
 
-import scala.concurrent.{ExecutionContext, Future, Promise}
-import scala.util.{Failure, Success}
+import scala.concurrent.{ExecutionContext, Future}
 
 object EnrichWithDevice extends LazyLogging with Conf with JsonSupport {
 
@@ -20,35 +19,12 @@ object EnrichWithDevice extends LazyLogging with Conf with JsonSupport {
                                            ec: ExecutionContext)
     : ((Observation, CommittableMessage[K, V])) => Future[
       (EnrichedAssessment[Device], CommittableMessage[K, V])] = {
+    case (ob, msg) =>
+      val assessment = Assessment(ob.name, ob.value)
 
-    (x: (Observation, CommittableMessage[K, V])) =>
-      {
-        val ob = x._1
-        val msg = x._2
-
-        val promise =
-          Promise[(EnrichedAssessment[Device], CommittableMessage[K, V])]()
-
-        val assessment = Assessment(ob.name, ob.value)
-
-        val f = deviceService ask SetAssessment(assessment, ob.deviceId)
-
-        f onComplete {
-          case Success(r: Any) =>
-            r match {
-              case Ack(device) =>
-                val enriched = EnrichedAssessment(assessment, device)
-                promise.success((enriched, msg))
-              case (ack) =>
-                promise.failure(new Exception(ack.toString))
-            }
-          case Failure(e) =>
-            logger.warn(s"can not update device assessment $assessment: $e")
-            promise.failure(e)
-        }
-
-        promise.future
-      }
+      (deviceService ask SetAssessment(assessment, ob.deviceId)).map({
+        case Ack(device) => (EnrichedAssessment(assessment, device), msg)
+      })
   }
 
 }

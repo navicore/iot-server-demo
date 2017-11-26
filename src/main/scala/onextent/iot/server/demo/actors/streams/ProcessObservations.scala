@@ -8,7 +8,11 @@ import akka.util.Timeout
 import com.typesafe.scalalogging.LazyLogging
 import onextent.iot.server.demo.Conf
 import onextent.iot.server.demo.Conf._
-import onextent.iot.server.demo.actors.streams.functions.observations.{EnrichWithDevice, ExtractObservations, FilterDevicesWithLocations}
+import onextent.iot.server.demo.actors.streams.functions.observations.{
+  EnrichWithDevice,
+  ExtractObservations,
+  FilterDevicesWithLocations
+}
 import onextent.iot.server.demo.models.functions.JsonSupport
 import onextent.iot.server.demo.models.{Device, EnrichedAssessment}
 import org.apache.kafka.clients.producer.ProducerRecord
@@ -27,10 +31,15 @@ private object ForwardableMessage
     ProducerMessage.Message(
       new ProducerRecord[Array[Byte], String](
         deviceAssessmentsTopic,
-        ev._1.enrichment.location.toString.getBytes("UTF8"),
-        ev._1.toJson.prettyPrint
+        ev match {
+          case (enhancedAssessment, _) =>
+            enhancedAssessment.enrichment.location.toString.getBytes("UTF8")
+        },
+        ev match {
+          case (enhancedAssessment, _) => enhancedAssessment.toJson.prettyPrint
+        }
       ),
-      ev._2.committableOffset
+      ev match { case (_, msg) => msg.committableOffset }
     )
 
   }

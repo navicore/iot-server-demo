@@ -4,29 +4,14 @@ import akka.kafka.ConsumerMessage
 import akka.util.Timeout
 import com.typesafe.scalalogging.LazyLogging
 
-import scala.concurrent.{ExecutionContext, Future, Promise}
-import scala.util.{Failure, Success}
+import scala.concurrent.{ExecutionContext, Future}
 
 object CommitKafkaOffset extends LazyLogging {
 
   def apply[A, K, V]()(implicit timeout: Timeout, ec: ExecutionContext)
     : ((A, ConsumerMessage.CommittableMessage[K, V])) => Future[
-      (A, ConsumerMessage.CommittableMessage[K, V])] = {
-
+      (A, ConsumerMessage.CommittableMessage[K, V])] =
     (t: (A, ConsumerMessage.CommittableMessage[K, V])) =>
-      {
-
-        val promise =
-          Promise[(A, ConsumerMessage.CommittableMessage[K, V])]()
-
-        t._2.committableOffset.commitScaladsl().onComplete {
-          case Success(_) => promise.success(t)
-          case Failure(e) =>
-            logger.error(s"commit to kafka: $e")
-            promise.failure(e)
-        }
-        promise.future
-      }
-  }
+      t._2.committableOffset.commitScaladsl().map(_ => t)
 
 }
