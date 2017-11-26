@@ -22,9 +22,10 @@ The windowing code is based on Software Mill's excellent [post about Akka Stream
 
 ### To Run
 
-* use https://gist.github.com/navicore/017c6ab1d735596cecc2732e2faaa0dd to run Kafka
+* use [these commands to](https://gist.github.com/navicore/017c6ab1d735596cecc2732e2faaa0dd) to run Kafka from Docker
 * `sbt run`
 * see `examples/get.rest` for API example
+* see `application.conf` for config and ENV VAR details
 
 ### Features
   * Device twins and location twins can be inspected via an HTTP API
