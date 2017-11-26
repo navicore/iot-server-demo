@@ -44,7 +44,7 @@ POST /api/device
 POST /api/observation
 {
     "name": "oil_temp",
-    "value": 135.3,
+    "value": 135.4,
     "deviceId": "479d2b95-0b62-41ff-8c79-f1d13442a687"
 }
 

@@ -6,7 +6,7 @@ import akka.http.scaladsl.server.Directives
 import ch.megard.akka.http.cors.scaladsl.CorsDirectives._
 import com.typesafe.scalalogging.LazyLogging
 import onextent.iot.server.demo.actors.{DeviceService, LocationService}
-import onextent.iot.server.demo.actors.streams.ProcessObservations
+import onextent.iot.server.demo.actors.streams.{ProcessDeviceAssessments, ProcessObservations}
 import onextent.iot.server.demo.http.functions.HttpSupport
 import onextent.iot.server.demo.http.{DeviceRoute, LocationRoute, ObservationRoute}
 import onextent.iot.server.demo.Conf._
@@ -20,6 +20,7 @@ object Main extends App with LazyLogging with HttpSupport with Directives {
     actorSystem.actorOf(DeviceService.props(locationService), DeviceService.name)
 
   ProcessObservations(deviceService)
+  ProcessDeviceAssessments(locationService)
 
   val route =
     HealthCheck ~
