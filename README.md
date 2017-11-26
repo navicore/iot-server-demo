@@ -5,12 +5,14 @@ Akka HTTP Kafka Demo
 
 A system of Akka actors that maintain device, location, and fleet state.
 
-A system of sliding windows maintains all the observations for a location by
+A system of [sliding windows] maintains all the observations for a location by
 observation name (ie: water_level or oil_temp, etc...).  The currently active
 window is available as it is being populated - ie: you can see all prior 10-minute
 windows as if they were tumbled with no overlap, but the current window is always
 the most recent 10 minutes - overlapping the prior window until is is complete
 and the next one is started.
+
+The windowing code is based on Software Mill's great [post about Akka Streams and windowing].
 
 ### Features
   * Device twins and location twins can be inspected via an HTTP API
@@ -34,6 +36,7 @@ and the next one is started.
   * AUTH
   * HTTP2
 
-
+[post about Akka Streams and windowing]: https://softwaremill.com/windowing-data-in-akka-streams/
+[sliding windows]: https://softwaremill.com/windowing-data-in-akka-streams/
 [windows with watermarking]: https://softwaremill.com/windowing-data-in-akka-streams/
 
