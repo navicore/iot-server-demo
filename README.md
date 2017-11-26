@@ -1,3 +1,4 @@
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/a237011c288a4a4e9d7462094be6a082)](https://www.codacy.com/app/navicore/iot-server-demo?utm_source=github.com&utm_medium=referral&utm_content=navicore/iot-server-demo&utm_campaign=badger)
 [![Build Status](https://travis-ci.org/navicore/iot-server-demo.svg?branch=master)](https://travis-ci.org/navicore/iot-server-demo)
 
 IOT Server Demo
