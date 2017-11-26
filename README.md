@@ -50,6 +50,7 @@ The windowing code is based on Software Mill's excellent [post about Akka Stream
   * AUTH
   * HTTP2
   * Let observations reference devices by meaningful names (IOT devices won't like predefined UUIDs)
+  * Parameterize the window size, step, and watermarking settings
 
 [post about Akka Streams and windowing]: https://softwaremill.com/windowing-data-in-akka-streams/
 
