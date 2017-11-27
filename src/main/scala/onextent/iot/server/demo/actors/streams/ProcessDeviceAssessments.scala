@@ -9,7 +9,6 @@ import akka.util.Timeout
 import com.typesafe.scalalogging.LazyLogging
 import onextent.iot.server.demo.Conf._
 import onextent.iot.server.demo.actors.streams.functions._
-import onextent.iot.server.demo.actors.streams.functions.observations.ExtractDeviceAssessments
 
 object ProcessDeviceAssessments extends LazyLogging {
 

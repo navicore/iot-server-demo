@@ -19,22 +19,29 @@ object AggregatesToAssessments extends LazyLogging {
 
     def round(d: Double) = Math.round(d * 100.0) / 100.0
 
-    val rootName = agg.w match { case (_, _, name, _) => name }
+    agg.w match {
 
-    List(
-      (Assessment(s"${rootName}_${hour}_${minute}_count",
-                  agg.values.length,
-                  from),
-       agg.w._4),
-      (Assessment(s"${rootName}_${hour}_${minute}_ave",
-                  round(agg.values.sum / agg.values.length),
-                  from),
-       agg.w._4),
-      (Assessment(s"${rootName}_${hour}_${minute}_min", agg.values.min, from),
-       agg.w._4),
-      (Assessment(s"${rootName}_${hour}_${minute}_max", agg.values.max, from),
-       agg.w._4)
-    )
+      case (_, _, rootName, locationId) =>
+
+        List(
+          (Assessment(s"${rootName}_${hour}_${minute}_count",
+                      agg.values.length,
+                      from),
+           locationId),
+          (Assessment(s"${rootName}_${hour}_${minute}_ave",
+                      round(agg.values.sum / agg.values.length),
+                      from),
+           locationId),
+          (Assessment(s"${rootName}_${hour}_${minute}_min",
+                      agg.values.min,
+                      from),
+           locationId),
+          (Assessment(s"${rootName}_${hour}_${minute}_max",
+                      agg.values.max,
+                      from),
+           locationId)
+        )
+    }
 
   }
 

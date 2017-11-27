@@ -8,11 +8,7 @@ import akka.util.Timeout
 import com.typesafe.scalalogging.LazyLogging
 import onextent.iot.server.demo.Conf
 import onextent.iot.server.demo.Conf._
-import onextent.iot.server.demo.actors.streams.functions.observations.{
-  EnrichWithDevice,
-  ExtractObservations,
-  FilterDevicesWithLocations
-}
+import onextent.iot.server.demo.actors.streams.functions.{EnrichWithDevice, ExtractObservations, FilterDevicesWithLocations}
 import onextent.iot.server.demo.models.functions.JsonSupport
 import onextent.iot.server.demo.models.{Device, EnrichedAssessment}
 import org.apache.kafka.clients.producer.ProducerRecord

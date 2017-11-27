@@ -1,4 +1,4 @@
-package onextent.iot.server.demo.actors.streams.functions.observations
+package onextent.iot.server.demo.actors.streams.functions
 
 import akka.kafka.ConsumerMessage._
 import com.typesafe.scalalogging.LazyLogging

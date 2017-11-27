@@ -10,8 +10,9 @@ object CommitKafkaOffset extends LazyLogging {
 
   def apply[A, K, V]()(implicit timeout: Timeout, ec: ExecutionContext)
     : ((A, ConsumerMessage.CommittableMessage[K, V])) => Future[
-      (A, ConsumerMessage.CommittableMessage[K, V])] =
-    (t: (A, ConsumerMessage.CommittableMessage[K, V])) =>
-      t._2.committableOffset.commitScaladsl().map(_ => t)
+      (A, ConsumerMessage.CommittableMessage[K, V])] = {
+    case t @ (_, msg) =>
+      msg.committableOffset.commitScaladsl().map(_ => t)
+  }
 
 }

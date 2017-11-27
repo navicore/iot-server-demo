@@ -1,4 +1,4 @@
-package onextent.iot.server.demo.actors.streams.functions.observations
+package onextent.iot.server.demo.actors.streams.functions
 
 import akka.actor.ActorRef
 import akka.kafka.ConsumerMessage._

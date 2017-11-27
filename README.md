@@ -12,16 +12,20 @@ A system of Akka actors that maintain device, location, and fleet state.
 
 A system of sliding windows maintains all the observations for a location by
 observation name (ie: water_level or oil_temp, etc...).  The currently active
-window is available as it is being populated - ie: you can see all prior 10-minute
-windows as if they were tumbled with no overlap, but the current window is always
-the most recent 10 minutes - overlapping the prior window until it is complete
-and the next one is started.
+window is available as it is being populated - ie: you can see all prior
+10-minute windows as if they were tumbled with no overlap, but the current
+window is always the most recent 10 minutes (rounded to step time) -
+overlapping the prior window by step-time until it is complete and the next one
+is started.
 
-All current assessments at the device level are available from the device actor.
+All current assessments at the device level are available from the device
+actor.
 
-All current assessments at the location level are available from the location actor for 24 hours.
+All current assessments at the location level are available from the location
+actor for 24 hours.
 
-The windowing code is based on Software Mill's excellent [post about Akka Streams and windowing].
+The windowing code is based on Software Mill's excellent [post about Akka
+Streams and windowing].
 
 ### To Run
 
