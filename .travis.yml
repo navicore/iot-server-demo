@@ -27,5 +27,7 @@ after_success:
   - if [ "$TRAVIS_BRANCH" == "master" ]; then
     docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD";
     docker push navicore/iot-server-demo;
+    docker tag "navicore/iot-server-demo" "navicore/iot-server-demo:0.1.$TRAVIS_BUILD_NUMBER";
+    docker push "navicore/iot-server-demo:0.1.$TRAVIS_BUILD_NUMBER";
     fi
 
