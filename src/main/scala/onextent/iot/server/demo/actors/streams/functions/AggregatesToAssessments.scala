@@ -13,7 +13,6 @@ object AggregatesToAssessments extends LazyLogging {
     agg.w match {
 
       case (_, stopTime, rootName, locationId) =>
-
         val from: ZonedDateTime = ZonedDateTime.from(
           Instant.ofEpochMilli(stopTime).atOffset(ZoneOffset.UTC))
 
@@ -26,6 +25,10 @@ object AggregatesToAssessments extends LazyLogging {
         List(
           (Assessment(s"${rootName}_${hour}_${minute}_count",
                       agg.values.length,
+                      from),
+           locationId),
+          (Assessment(s"${rootName}_${hour}_${minute}_sum",
+                      round(agg.values.sum),
                       from),
            locationId),
           (Assessment(s"${rootName}_${hour}_${minute}_ave",
