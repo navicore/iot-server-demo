@@ -12,6 +12,7 @@ jdk:
 script:
   ## This runs the template with the default parameters, and runs test within the templated app.
   - sbt -Dfile.encoding=UTF8 -J-XX:ReservedCodeCacheSize=256M test assembly
+  - docker build -t navicore/iot-server-demo .
 
   # Tricks to avoid unnecessary cache updates
   - find $HOME/.sbt -name "*.lock" | xargs rm
@@ -21,9 +22,6 @@ sudo: required
 
 services:
   - docker
-
-before_install:
-  - docker build -t navicore/iot-server-demo .
 
 after_success:
   - if [ "$TRAVIS_BRANCH" == "master" ]; then
