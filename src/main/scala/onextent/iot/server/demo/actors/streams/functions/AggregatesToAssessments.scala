@@ -10,18 +10,18 @@ object AggregatesToAssessments extends LazyLogging {
 
   def apply()(agg: AggregateEventData): List[(Assessment, UUID)] = {
 
-    val from: ZonedDateTime = ZonedDateTime.from(
-      Instant.ofEpochMilli(agg.w._2).atOffset(ZoneOffset.UTC))
-
-    val hour = "%02d".format(from.getHour)
-
-    val minute = "%02d".format(from.getMinute / 10 * 10)
-
-    def round(d: Double) = Math.round(d * 100.0) / 100.0
-
     agg.w match {
 
-      case (_, _, rootName, locationId) =>
+      case (_, stopTime, rootName, locationId) =>
+
+        val from: ZonedDateTime = ZonedDateTime.from(
+          Instant.ofEpochMilli(stopTime).atOffset(ZoneOffset.UTC))
+
+        val hour = "%02d".format(from.getHour)
+
+        val minute = "%02d".format(from.getMinute / 10 * 10)
+
+        def round(d: Double) = Math.round(d * 100.0) / 100.0
 
         List(
           (Assessment(s"${rootName}_${hour}_${minute}_count",
