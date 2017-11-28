@@ -1,0 +1,21 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: iot-server-demo-secure-ingress
+  annotations:
+    kubernetes.io/ingress.class: istio
+spec:
+  tls:
+
+    #openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /tmp/tls.key -out /tmp/tls.crt -subj "/CN=my.domain.com"
+
+    #kubectl create -n istio-system secret tls istio-ingress-certs --key /tmp/tls.key --cert /tmp/tls.crt
+
+    - secretName: istio-ingress-certs # currently ignored
+  rules:
+  - http:
+      paths:
+      - path: /iot/.*
+        backend:
+          serviceName: iot-server-demo
+          servicePort: 8080

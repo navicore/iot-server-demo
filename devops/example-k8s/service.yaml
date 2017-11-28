@@ -1,0 +1,12 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: iot-server-demo
+spec:
+  ports:
+    - port: 8080
+      targetPort: 8080
+      name: http
+  selector:
+    component: iot-server-demo
+
