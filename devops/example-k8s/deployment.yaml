@@ -1,24 +1,26 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: iot-server-demo-v1
+  labels:
+    run: iot-server-demo
+  name: iot-server-demo
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      run: iot-server-demo
   template:
     metadata:
       labels:
-        app: iot-server-demo
-        version: v1
+        run: iot-server-demo
     spec:
       containers:
-        - name: iot-server-demo
-          image: navicore/iot-server-demo
+        - image: navicore/iot-server-demo
+          name: iot-server-demo
           imagePullPolicy: Always
           env:
           - name: BOOTSTRAP
+            # if your kafka broker 'kafka-1:9092' is in ns 'kafka' use `kafka-1.kafka:9092`
             value: "CHANGE_ME"
           - name: CONSUMER_GROUP
             value: "CHANGE_ME"
-          ports:
-          - containerPort: 8080
-
