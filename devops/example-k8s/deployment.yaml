@@ -15,12 +15,11 @@ spec:
         run: iot-server-demo
     spec:
       containers:
-        - image: navicore/iot-server-demo
-          name: iot-server-demo
+        - name: iot-server-demo
+          image: navicore/iot-server-demo
           imagePullPolicy: Always
           env:
           - name: BOOTSTRAP
-            # if your kafka broker 'kafka-1:9092' is in ns 'kafka' use `kafka-1.kafka:9092`
-            value: "CHANGE_ME"
+            value: "kafka-s03:9092"
           - name: CONSUMER_GROUP
-            value: "CHANGE_ME"
+            value: "iot-server-demo"
