@@ -15,7 +15,7 @@ spec:
   rules:
   - http:
       paths:
-      - path: /.*
+      - path: /iot/.*
         backend:
           serviceName: iot-server-demo
           servicePort: 8080
