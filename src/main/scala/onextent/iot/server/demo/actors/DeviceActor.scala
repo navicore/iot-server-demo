@@ -1,5 +1,7 @@
 package onextent.iot.server.demo.actors
 
+import java.util.UUID
+
 import akka.actor.{Actor, Props}
 import akka.util.Timeout
 import com.typesafe.scalalogging.LazyLogging
@@ -9,9 +11,12 @@ import onextent.iot.server.demo.models.{Assessment, Device}
 object DeviceActor {
   def props(device: Device)(implicit timeout: Timeout) =
     Props(new DeviceActor(device))
-  final case class Get()
-  final case class Ack(device: Device)
-  final case class GetAssessments()
+  final case class DeviceAssessmentAck(device: Device)
+  final case class GetDevice(id: UUID)
+  final case class CreateDevice(device: Device)
+  final case class GetDeviceAssessments(id: UUID)
+  final case class SetDeviceAssessment(assessment: Assessment, deviceId: UUID)
+  final case class DeviceAlreadyExists(device: Device)
 }
 
 class DeviceActor(device: Device) extends Actor with LazyLogging {
@@ -22,12 +27,12 @@ class DeviceActor(device: Device) extends Actor with LazyLogging {
 
     case assessment: Assessment =>
       context become hasState(assessments + (assessment.name -> assessment))
-      sender() ! Ack(device)
+      sender() ! DeviceAssessmentAck(device)
 
-    case Get =>
+    case GetDevice(_) =>
       sender() ! device
 
-    case GetAssessments =>
+    case GetDeviceAssessments(_) =>
       sender() ! assessments.values.toList
   }
 

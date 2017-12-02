@@ -1,24 +1,16 @@
 package onextent.iot.server.demo.actors
 
-import java.util.UUID
-
 import akka.actor._
 import akka.util.Timeout
 import com.typesafe.scalalogging.LazyLogging
-import onextent.iot.server.demo.models.{Assessment, Device, Location}
-import LocationService._
+import onextent.iot.server.demo.models.Location
+import onextent.iot.server.demo.actors.LocationActor._
 
 object LocationService {
   def props(implicit timeout: Timeout) = Props(new LocationService)
   def name = "locationService"
 
-  final case class Get(id: UUID)
-  final case class GetDevices(id: UUID)
-  final case class GetAssessments(id: UUID)
-  final case class SetAssessment(assessment: Assessment, locationId: UUID)
-  final case class Create(location: Location)
-  final case class AlreadyExists(location: Location)
-  final case class AddDevice(device: Device)
+
 }
 
 class LocationService(implicit timeout: Timeout) extends Actor with LazyLogging {
@@ -30,35 +22,35 @@ class LocationService(implicit timeout: Timeout) extends Actor with LazyLogging 
 
   override def receive: PartialFunction[Any, Unit] = {
 
-    case Get(id) =>
+    case GetLocation(id) =>
       def notFound(): Unit = sender() ! None
-      context.child(id.toString).fold(notFound())(_ forward LocationActor.Get)
+      context.child(id.toString).fold(notFound())(_ forward GetLocation(id))
 
-    case GetAssessments(id) =>
+    case GetLocationAssessments(id) =>
       def notFound(): Unit = sender() ! None
-      context.child(id.toString).fold(notFound())(_ forward LocationActor.GetAssessments)
+      context.child(id.toString).fold(notFound())(_ forward GetLocationAssessments(id))
 
-    case GetDevices(id) =>
+    case GetLocationDevices(id) =>
       def notFound(): Unit = sender() ! None
-      context.child(id.toString).fold(notFound())(_ forward LocationActor.GetDevices)
+      context.child(id.toString).fold(notFound())(_ forward GetLocationDevices(id))
 
-    case Create(location) =>
+    case CreateLocation(location) =>
       context
         .child(location.id.toString)
         .fold(create(location.id.toString, location))(_ => {
-          sender() ! AlreadyExists(location)
+          sender() ! LocationAlreadyExists(location)
         })
 
-    case SetAssessment(assessment, locationId) =>
+    case SetLocationAssessment(assessment, locationId) =>
       def notFound(): Unit = logger.warn(s"location $locationId not found for assessment $assessment update")
       context.child(locationId.toString).fold(notFound())(_ forward assessment)
 
-    case AddDevice(device) =>
+    case AddDeviceToLocation(device) =>
       device.location match {
         case Some(l) =>
           context
             .child(l.toString)
-            .fold(logger.warn(s"location not found: $device"))(_ forward AddDevice(device))
+            .fold(logger.warn(s"location not found: $device"))(_ forward AddDeviceToLocation(device))
         case _ => logger.warn(s"no location field: $device")
       }
 

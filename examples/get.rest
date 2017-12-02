@@ -1,5 +1,5 @@
-https://40.121.218.131
-#http://localhost:8080
+#https://40.121.218.131
+http://localhost:8080
 -k
 Content-Type: application/json; charset=utf-8
 --

@@ -1,0 +1,6 @@
+http://localhost:8080/iot/device/479d2b95-0b62-41ff-8c79-f1d13442a687
+http://localhost:8080/iot/device/479d2b95-0b62-41ff-8c79-f1d13442a687
+http://localhost:8080/iot/device/479d2b95-0b62-41ff-8c79-f1d13442a687
+http://localhost:8080/iot/device/479d2b95-0b62-41ff-8c79-f1d13442a687
+http://localhost:8080/iot/device/479d2b95-0b62-41ff-8c79-f1d13442a687
+http://localhost:8080/iot/device/479d2b95-0b62-41ff-8c79-f1d13442a687

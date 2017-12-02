@@ -6,8 +6,7 @@ import akka.pattern.ask
 import akka.util.Timeout
 import com.typesafe.scalalogging.LazyLogging
 import onextent.iot.server.demo.Conf
-import onextent.iot.server.demo.actors.DeviceActor.Ack
-import onextent.iot.server.demo.actors.DeviceService.SetAssessment
+import onextent.iot.server.demo.actors.DeviceActor._
 import onextent.iot.server.demo.models.functions.JsonSupport
 import onextent.iot.server.demo.models.{Assessment, Device, EnrichedAssessment, Observation}
 
@@ -22,8 +21,8 @@ object EnrichWithDevice extends LazyLogging with Conf with JsonSupport {
     case (ob, msg) =>
       val assessment = Assessment(ob.name, ob.value)
 
-      (deviceService ask SetAssessment(assessment, ob.deviceId)).map({
-        case Ack(device) => (EnrichedAssessment(assessment, device), msg)
+      (deviceService ask SetDeviceAssessment(assessment, ob.deviceId)).map({
+        case DeviceAssessmentAck(device) => (EnrichedAssessment(assessment, device), msg)
       })
   }
 
