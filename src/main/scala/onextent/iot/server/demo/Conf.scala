@@ -18,7 +18,7 @@ import scala.concurrent.ExecutionContextExecutor
 
 object Conf extends Conf with LazyLogging {
 
-  implicit val actorSystem: ActorSystem = ActorSystem("akka_kafka_demo")
+  implicit val actorSystem: ActorSystem = ActorSystem("IotServerDemo")
   implicit val ec: ExecutionContextExecutor = actorSystem.dispatcher
 
   val decider: Supervision.Decider = {
@@ -65,6 +65,9 @@ trait Conf {
   val conf: Config = ConfigFactory.load()
 
   val appName: String = conf.getString("main.appName")
+  val locationServiceShards: Int = conf.getInt("main.locationServiceShards")
+  val deviceServiceShards: Int = conf.getInt("main.deviceServiceShards")
+
   val bootstrap: String = conf.getString("kafka.bootstrap")
   val consumerGroup: String = conf.getString("kafka.consumerGroup")
 

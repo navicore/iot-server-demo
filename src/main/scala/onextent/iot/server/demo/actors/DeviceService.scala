@@ -22,7 +22,11 @@ class DeviceService(locationService: ActorRef)(implicit timeout: Timeout)
   def create(actorId: String, device: Device): Unit = {
     context.actorOf(DeviceActor.props(device), actorId)
     sender() ! device
-    locationService ! AddDeviceToLocation(device)
+    device.location match {
+      case Some(locationId) =>
+        locationService ! AddDeviceToLocation(device, locationId)
+      case _ =>
+    }
   }
 
   override def receive: PartialFunction[Any, Unit] = {

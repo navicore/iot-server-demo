@@ -18,7 +18,7 @@ object LocationActor {
   final case class SetLocationAssessment(assessment: Assessment, locationId: UUID)
   final case class CreateLocation(location: Location)
   final case class LocationAlreadyExists(location: Location)
-  final case class AddDeviceToLocation(device: Device)
+  final case class AddDeviceToLocation(device: Device, locationId: UUID)
   final case class LocationAssessmentAck(device: Location)
 
 }
@@ -33,7 +33,7 @@ class LocationActor(location: Location) extends Actor with LazyLogging {
       context become hasState(assessments + (assessment.name -> assessment), devices)
       sender() ! LocationAssessmentAck(location)
 
-    case AddDeviceToLocation(device) =>
+    case AddDeviceToLocation(device, _) =>
       context become hasState(assessments, device :: devices)
 
     case GetLocation(_) =>
