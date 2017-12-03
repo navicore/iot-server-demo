@@ -1,19 +1,26 @@
-package onextent.iot.server.demo.actors
+package onextent.iot.server.demo.actors.location
+
+import java.util.UUID
 
 import akka.actor.{Actor, Props}
 import akka.util.Timeout
 import com.typesafe.scalalogging.LazyLogging
-import onextent.iot.server.demo.actors.LocationActor.{Ack, Get, GetAssessments, GetDevices}
-import onextent.iot.server.demo.actors.LocationService.AddDevice
+import onextent.iot.server.demo.actors.location.LocationActor._
 import onextent.iot.server.demo.models._
 
 object LocationActor {
   def props(location: Location)(implicit timeout: Timeout) =
     Props(new LocationActor(location))
-  final case class Get()
-  final case class GetAssessments()
-  final case class GetDevices()
-  final case class Ack(device: Location)
+
+  final case class GetLocation(id: UUID)
+  final case class GetLocationDevices(id: UUID)
+  final case class GetLocationAssessments(id: UUID)
+  final case class SetLocationAssessment(assessment: Assessment, locationId: UUID)
+  final case class CreateLocation(location: Location)
+  final case class LocationAlreadyExists(location: Location)
+  final case class AddDeviceToLocation(device: Device, locationId: UUID)
+  final case class LocationAssessmentAck(device: Location)
+
 }
 
 class LocationActor(location: Location) extends Actor with LazyLogging {
@@ -24,18 +31,18 @@ class LocationActor(location: Location) extends Actor with LazyLogging {
 
     case assessment: Assessment =>
       context become hasState(assessments + (assessment.name -> assessment), devices)
-      sender() ! Ack(location)
+      sender() ! LocationAssessmentAck(location)
 
-    case AddDevice(device) =>
+    case AddDeviceToLocation(device, _) =>
       context become hasState(assessments, device :: devices)
 
-    case Get =>
+    case GetLocation(_) =>
       sender() ! location
 
-    case GetAssessments =>
+    case GetLocationAssessments(_) =>
       sender() ! assessments.values.toList
 
-    case GetDevices =>
+    case GetLocationDevices(_) =>
       sender() ! devices
   }
 

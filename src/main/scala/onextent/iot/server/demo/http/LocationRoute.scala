@@ -5,7 +5,7 @@ import akka.http.scaladsl.model.{ContentTypes, HttpEntity, StatusCodes}
 import akka.http.scaladsl.server.{Directives, Route}
 import akka.pattern.ask
 import com.typesafe.scalalogging.LazyLogging
-import onextent.iot.server.demo.actors.LocationService._
+import onextent.iot.server.demo.actors.location.LocationActor._
 import onextent.iot.server.demo.http.functions.HttpSupport
 import onextent.iot.server.demo.models._
 import onextent.iot.server.demo.models.functions.JsonSupport
@@ -22,7 +22,7 @@ object LocationRoute
   private def lookupAssessments(service: ActorRef): Route =
     path(urlpath / "location" / JavaUUID / "assessments") { id =>
       get {
-        val f: Future[Any] = service ask GetAssessments(id)
+        val f: Future[Any] = service ask GetLocationAssessments(id)
         onSuccess(f) { (r: Any) =>
           {
             r match {
@@ -43,7 +43,7 @@ object LocationRoute
   private def lookupDevices(service: ActorRef): Route =
     path(urlpath / "location" / JavaUUID / "devices") { id =>
       get {
-        val f: Future[Any] = service ask GetDevices(id)
+        val f: Future[Any] = service ask GetLocationDevices(id)
         onSuccess(f) { (r: Any) =>
           {
             r match {
@@ -64,7 +64,7 @@ object LocationRoute
   private def lookupLocation(service: ActorRef): Route =
     path(urlpath / "location" / JavaUUID) { id =>
       get {
-        val f: Future[Any] = service ask Get(id)
+        val f: Future[Any] = service ask GetLocation(id)
         onSuccess(f) { (r: Any) =>
           {
             r match {
@@ -84,7 +84,7 @@ object LocationRoute
       post {
         decodeRequest {
           entity(as[LocationRequest]) { locationReq =>
-            val f: Future[Any] = service ask Create(MkLocation(locationReq))
+            val f: Future[Any] = service ask CreateLocation(MkLocation(locationReq))
             onSuccess(f) { (r: Any) =>
               {
                 r match {
@@ -92,7 +92,7 @@ object LocationRoute
                     complete(
                       HttpEntity(ContentTypes.`application/json`,
                                  location.toJson.prettyPrint))
-                  case AlreadyExists(d) =>
+                  case LocationAlreadyExists(d) =>
                     complete(StatusCodes.Conflict, s"${d.id} already exists")
                   case _ =>
                     complete(StatusCodes.NotFound)
