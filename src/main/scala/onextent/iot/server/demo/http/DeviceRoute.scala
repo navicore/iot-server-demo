@@ -5,7 +5,7 @@ import akka.http.scaladsl.model.{ContentTypes, HttpEntity, StatusCodes}
 import akka.http.scaladsl.server.{Directives, Route}
 import akka.pattern.ask
 import com.typesafe.scalalogging.LazyLogging
-import onextent.iot.server.demo.actors.DeviceActor._
+import onextent.iot.server.demo.actors.device.DeviceActor._
 import onextent.iot.server.demo.http.functions.HttpSupport
 import onextent.iot.server.demo.models.functions.JsonSupport
 import onextent.iot.server.demo.models._

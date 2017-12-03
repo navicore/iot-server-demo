@@ -1,4 +1,4 @@
-package onextent.iot.server.demo.actors
+package onextent.iot.server.demo.actors.location
 
 import java.util.UUID
 
@@ -7,7 +7,7 @@ import akka.cluster.sharding.ShardRegion
 import akka.util.Timeout
 import com.typesafe.scalalogging.LazyLogging
 import onextent.iot.server.demo.Conf
-import onextent.iot.server.demo.actors.LocationActor._
+import onextent.iot.server.demo.actors.location.LocationActor._
 import onextent.iot.server.demo.models.Location
 
 object LocationService extends Conf {
@@ -44,7 +44,7 @@ class LocationService(implicit timeout: Timeout)
     extends Actor
     with LazyLogging {
 
-  logger.info(s"LocationService actor ${context.self.path} created")
+  logger.debug(s"actor ${context.self.path} created")
 
   def create(actorId: String, location: Location): Unit = {
     context.actorOf(LocationActor.props(location), actorId)

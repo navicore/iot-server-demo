@@ -7,7 +7,7 @@ import akka.pattern.ask
 import akka.util.Timeout
 import com.typesafe.scalalogging.LazyLogging
 import onextent.iot.server.demo.Conf
-import onextent.iot.server.demo.actors.LocationActor._
+import onextent.iot.server.demo.actors.location.LocationActor.SetLocationAssessment
 import onextent.iot.server.demo.models.Assessment
 import onextent.iot.server.demo.models.functions.JsonSupport
 

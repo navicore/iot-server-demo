@@ -6,9 +6,9 @@ import akka.pattern.ask
 import akka.util.Timeout
 import com.typesafe.scalalogging.LazyLogging
 import onextent.iot.server.demo.Conf
-import onextent.iot.server.demo.actors.DeviceActor._
+import onextent.iot.server.demo.actors.device.DeviceActor._
 import onextent.iot.server.demo.models.functions.JsonSupport
-import onextent.iot.server.demo.models.{Assessment, Device, EnrichedAssessment, Observation}
+import onextent.iot.server.demo.models._
 
 import scala.concurrent.{ExecutionContext, Future}
 

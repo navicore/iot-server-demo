@@ -1,4 +1,4 @@
-package onextent.iot.server.demo.actors
+package onextent.iot.server.demo.actors.location
 
 import akka.actor.{Actor, ActorRef, Props}
 import akka.cluster.sharding.{ClusterSharding, ClusterShardingSettings}

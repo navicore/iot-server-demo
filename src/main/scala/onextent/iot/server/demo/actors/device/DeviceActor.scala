@@ -1,11 +1,11 @@
-package onextent.iot.server.demo.actors
+package onextent.iot.server.demo.actors.device
 
 import java.util.UUID
 
 import akka.actor.{Actor, Props}
 import akka.util.Timeout
 import com.typesafe.scalalogging.LazyLogging
-import onextent.iot.server.demo.actors.DeviceActor._
+import onextent.iot.server.demo.actors.device.DeviceActor._
 import onextent.iot.server.demo.models.{Assessment, Device}
 
 object DeviceActor {
