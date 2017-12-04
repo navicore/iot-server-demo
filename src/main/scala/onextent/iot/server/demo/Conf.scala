@@ -73,6 +73,7 @@ trait Conf {
 
   val appName: String = conf.getString("main.appName")
   val isSeed: Boolean = conf.getString("main.role").contains("seed")
+  val isStreamer: Boolean = conf.getString("main.role").contains("streamer")
   val akkaSeed: String = conf.getString("main.akkaSeed")
 
   val locationServiceShards: Int = conf.getInt("main.locationServiceShards")

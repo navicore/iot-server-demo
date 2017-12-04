@@ -23,10 +23,10 @@ object Main extends App with LazyLogging with HttpSupport with Directives {
                         ShardedDeviceService.name)
 
 
-  if (isSeed) {
-    logger.info(s"seed node.  starting singleton stream ingestors.")
-    ProcessObservations(deviceService)
-    ProcessDeviceAssessments(locationService)
+  if (isStreamer) {
+    logger.info(s"streamer node.  starting singleton stream ingestors.")
+    //ProcessObservations(deviceService)
+    //ProcessDeviceAssessments(locationService)
   }
 
   val route =
