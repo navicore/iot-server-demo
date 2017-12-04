@@ -66,7 +66,8 @@ trait Conf {
   val origConf: Config = ConfigFactory.load()
   val overrides: Config = ConfigFactory.parseString(s"""
       # override seed node 0
-      akka.cluster.seed-nodes.0="${origConf.getString("main.akkaSeed")}"
+      akka.cluster.seed-nodes.0="${origConf.getString("main.akkaSeed0")}"
+      akka.cluster.seed-nodes.1="${origConf.getString("main.akkaSeed1")}"
       """)
 
   val conf: Config = overrides.withFallback(ConfigFactory.load())
@@ -74,7 +75,8 @@ trait Conf {
   val appName: String = conf.getString("main.appName")
   val isSeed: Boolean = conf.getString("main.role").contains("seed")
   val isStreamer: Boolean = conf.getString("main.role").contains("streamer")
-  val akkaSeed: String = conf.getString("main.akkaSeed")
+  val akkaSeed0: String = conf.getString("main.akkaSeed0")
+  val akkaSeed1: String = conf.getString("main.akkaSeed1")
 
   val locationServiceShards: Int = conf.getInt("main.locationServiceShards")
   val deviceServiceShards: Int = conf.getInt("main.deviceServiceShards")
