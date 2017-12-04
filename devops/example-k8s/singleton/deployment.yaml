@@ -1,0 +1,40 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    run: iot-server-demo-seed
+  name: iot-server-demo-seed
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      run: iot-server-demo-seed
+  template:
+    metadata:
+      labels:
+        run: iot-server-demo-seed
+    spec:
+      containers:
+        - name: iot-server-demo-seed
+          image: navicore/iot-server-demo
+          imagePullPolicy: Always
+          env:
+          - name: ROLE
+            value: "seed"
+          - name: AKKA_SEED
+            value: "akka.tcp://IotServerDemo@iot-server-demo-seed:2551"
+          - name: POD_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.name
+          - name: POD_IP
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: status.podIP
+          - name: AKKA_PORT
+            value: "2551"
+          - name: BOOTSTRAP
+            value: "kafka-0.broker.kafka.svc.cluster.local:9092"
+          - name: CONSUMER_GROUP
+            value: "iot-server-demo"
