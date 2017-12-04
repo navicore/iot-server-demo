@@ -22,8 +22,12 @@ object Main extends App with LazyLogging with HttpSupport with Directives {
     actorSystem.actorOf(ShardedDeviceService.props(locationService),
                         ShardedDeviceService.name)
 
-  ProcessObservations(deviceService)
-  ProcessDeviceAssessments(locationService)
+
+  if (isSeed) {
+    logger.info(s"seed node.  starting singleton stream ingestors.")
+    ProcessObservations(deviceService)
+    ProcessDeviceAssessments(locationService)
+  }
 
   val route =
     HealthCheck ~
