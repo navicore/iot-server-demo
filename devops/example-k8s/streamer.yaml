@@ -1,0 +1,43 @@
+apiVersion: apps/v1beta1
+kind: StatefulSet
+metadata:
+  labels:
+    run: iot-server-demo-streamer
+  name: iot-server-demo-streamer
+spec:
+  serviceName: iot-server-demo-streamer
+  replicas: 1
+  selector:
+    matchLabels:
+      run: iot-server-demo-streamer
+  template:
+    metadata:
+      labels:
+        run: iot-server-demo-streamer
+    spec:
+      containers:
+      - name: iot-server-demo-streamer
+        image: navicore/iot-server-demo
+        imagePullPolicy: Always
+        env:
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: AKKA_SEED0
+          value: "akka.tcp://IotServerDemo@iot-server-demo-seed-0.iot-server-demo-seed:2551"
+        - name: AKKA_SEED1
+          value: "akka.tcp://IotServerDemo@iot-server-demo-seed-1.iot-server-demo-seed:2551"
+        - name: BOOTSTRAP
+          value: "kafka-0.broker.kafka.svc.cluster.local:9092"
+        - name: ROLE
+          value: "streamer"
+        command: ["/bin/sh", "-c", "HOST_NAME=${POD_NAME}.iot-server-demo-streamer java -jar /app/IotServerDemo.jar"]
+        livenessProbe:
+          tcpSocket:
+            port: 2551
+        ports:
+        - containerPort: 2551
+          protocol: TCP
+        - containerPort: 8080
+          protocol: TCP

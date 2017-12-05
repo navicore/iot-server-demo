@@ -25,8 +25,8 @@ object Main extends App with LazyLogging with HttpSupport with Directives {
 
   if (isStreamer) {
     logger.info(s"streamer node.  starting singleton stream ingestors.")
-    //ProcessObservations(deviceService)
-    //ProcessDeviceAssessments(locationService)
+    ProcessObservations(deviceService)
+    ProcessDeviceAssessments(locationService)
   }
 
   val route =
