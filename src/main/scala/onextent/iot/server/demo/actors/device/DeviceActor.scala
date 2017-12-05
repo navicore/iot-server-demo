@@ -21,6 +21,8 @@ object DeviceActor {
 
 class DeviceActor(device: Device) extends Actor with LazyLogging {
 
+  logger.debug(s"device actor for '${device.name}' created")
+
   def receive: Receive = hasState(Map[String, Assessment]())
 
   def hasState(assessments: Map[String, Assessment]): Receive = {

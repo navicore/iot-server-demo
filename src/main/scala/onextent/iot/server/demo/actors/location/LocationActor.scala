@@ -25,6 +25,8 @@ object LocationActor {
 
 class LocationActor(location: Location) extends Actor with LazyLogging {
 
+  logger.debug(s"location actor for '${location.name}' created")
+
   def receive: Receive = hasState(Map[String, Assessment](), List[Device]())
 
   def hasState(assessments: Map[String, Assessment], devices: List[Device]): Receive = {
