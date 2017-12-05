@@ -13,4 +13,4 @@ Components:
  * Deployment for workers that also serve as http handlers for ingress service
 
 ---
-[blog post]: https://medium.com/google-cloud/clustering-akka-in-kubernetes-with-statefulset-and-deployment-459c0e05f2ea
+[Software Mill blog post]: https://medium.com/google-cloud/clustering-akka-in-kubernetes-with-statefulset-and-deployment-459c0e05f2ea
