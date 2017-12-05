@@ -1,0 +1,39 @@
+apiVersion: apps/v1beta1
+kind: StatefulSet
+metadata:
+  labels:
+    run: iot-server-demo-seed
+  name: iot-server-demo-seed
+spec:
+  serviceName: iot-server-demo-seed
+  replicas: 2
+  selector:
+    matchLabels:
+      run: iot-server-demo-seed
+  template:
+    metadata:
+      labels:
+        run: iot-server-demo-seed
+    spec:
+      containers:
+      - name: iot-server-demo-seed
+        image: navicore/iot-server-demo
+        imagePullPolicy: Always
+        env:
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: AKKA_SEED0
+          value: "akka.tcp://IotServerDemo@iot-server-demo-seed-0.iot-server-demo-seed:2551"
+        - name: AKKA_SEED1
+          value: "akka.tcp://IotServerDemo@iot-server-demo-seed-1.iot-server-demo-seed:2551"
+        command: ["/bin/sh", "-c", "HOST_NAME=${POD_NAME}.iot-server-demo-seed java -jar /app/IotServerDemo.jar"]
+        livenessProbe:
+          tcpSocket:
+            port: 2551
+        ports:
+        - containerPort: 2551
+          protocol: TCP
+        - containerPort: 8080
+          protocol: TCP
