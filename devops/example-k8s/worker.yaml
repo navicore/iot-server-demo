@@ -1,11 +1,10 @@
 apiVersion: apps/v1beta1
-kind: StatefulSet
+kind: Deployment
 metadata:
   labels:
     run: iot-server-demo-worker
   name: iot-server-demo-worker
 spec:
-  serviceName: iot-server-demo-worker
   replicas: 3
   selector:
     matchLabels:
@@ -20,17 +19,21 @@ spec:
         image: navicore/iot-server-demo
         imagePullPolicy: Always
         env:
-        - name: POD_NAME
+        - name: HOST_NAME
           valueFrom:
             fieldRef:
-              fieldPath: metadata.name
+              apiVersion: v1
+              fieldPath: status.podIP
         - name: AKKA_SEED0
           value: "akka.tcp://IotServerDemo@iot-server-demo-seed-0.iot-server-demo-seed:2551"
         - name: AKKA_SEED1
           value: "akka.tcp://IotServerDemo@iot-server-demo-seed-1.iot-server-demo-seed:2551"
+        - name: BOOTSTRAP
+          value: "kafka-0.broker.kafka.svc.cluster.local:9092"
+        - name: CONSUMER_GROUP
+          value: "IotDemoServerStreamer"
         - name: ROLE
           value: "worker"
-        command: ["/bin/sh", "-c", "HOST_NAME=${POD_NAME}.iot-server-demo-worker java -jar /app/IotServerDemo.jar"]
         livenessProbe:
           tcpSocket:
             port: 2551
