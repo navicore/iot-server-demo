@@ -3,22 +3,19 @@ package onextent.iot.server.demo
 import akka.actor.ActorSystem
 import akka.kafka.{ConsumerSettings, ProducerSettings}
 import akka.pattern.AskTimeoutException
+import akka.serialization.SerializationExtension
 import akka.stream.{ActorMaterializer, ActorMaterializerSettings, Supervision}
 import com.typesafe.config.{Config, ConfigFactory}
 import com.typesafe.scalalogging.LazyLogging
 import org.apache.kafka.clients.consumer.ConsumerConfig
-import org.apache.kafka.common.serialization.{
-  ByteArrayDeserializer,
-  ByteArraySerializer,
-  StringDeserializer,
-  StringSerializer
-}
+import org.apache.kafka.common.serialization.{ByteArrayDeserializer, ByteArraySerializer, StringDeserializer, StringSerializer}
 
 import scala.concurrent.ExecutionContextExecutor
 
 object Conf extends Conf with LazyLogging {
 
   implicit val actorSystem: ActorSystem = ActorSystem(appName, conf)
+  SerializationExtension(actorSystem)
 
   implicit val ec: ExecutionContextExecutor = actorSystem.dispatcher
 

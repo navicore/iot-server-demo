@@ -11,3 +11,6 @@ final case class Assessment(name: String,
 
 final case class EnrichedAssessment[E](assessment: Assessment, enrichment: E)
 
+import akka.serialization.SerializerWithStringManifest
+
+
