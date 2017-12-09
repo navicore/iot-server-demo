@@ -35,7 +35,7 @@ object AvroSupport extends JsonSupport with LazyLogging {
 
   }
 
-  class SetDeviceAssessmentSerializerOld
+  class SetDeviceAssessmentSerializer
       extends AvroSerializer[SetDeviceAssessment] {
     override def identifier: Int = 100010
     final val Manifest = classOf[SetDeviceAssessment].getName
