@@ -13,8 +13,4 @@ final case class EnrichedAssessment[E](assessment: Assessment, enrichment: E)
 
 import akka.serialization.SerializerWithStringManifest
 
-abstract class AvroSerializer[T] extends SerializerWithStringManifest {
 
-  override def manifest(o: AnyRef): String = o.getClass.getName
-
-}
