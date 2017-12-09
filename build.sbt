@@ -27,8 +27,13 @@ libraryDependencies ++= Seq(
     "com.typesafe.akka" %% "akka-actor" % akkaVersion,
     "com.typesafe.akka" %% "akka-stream" % akkaVersion,
     "com.typesafe.akka" %% "akka-cluster" % akkaVersion,
+    "com.typesafe.akka" %% "akka-remote" % akkaVersion,
+    "com.typesafe.akka" %% "akka-cluster-sharding" % akkaVersion,
     "com.typesafe.akka" %% "akka-http" % akkaHttpVersion,
     "com.typesafe.akka" %% "akka-http-spray-json" % akkaHttpVersion,
+    "com.typesafe.akka" %% "akka-persistence" % akkaVersion,
+
+    "com.typesafe.akka" %% "akka-persistence-cassandra" % "0.59",
 
     "org.json4s" %% "json4s-native" % "3.5.3",
     "com.github.nscala-time" %% "nscala-time" % "2.16.0",

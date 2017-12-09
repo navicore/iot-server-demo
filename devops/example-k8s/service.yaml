@@ -1,14 +1,30 @@
-kind: Service
 apiVersion: v1
+kind: Service
 metadata:
-  labels:
-    run: iot-server-demo
+  name: iot-server-demo-seed
+spec:
+  ports:
+  - port: 8080
+    protocol: TCP
+    targetPort: 8080
+    name: http
+  - port: 2551
+    protocol: TCP
+    targetPort: 2551
+    name: akka
+  selector:
+    run: iot-server-demo-seed
+  clusterIP: None
+---
+apiVersion: v1
+kind: Service
+metadata:
   name: iot-server-demo
 spec:
   ports:
-    - port: 8080
-      targetPort: 8080
-      name: http
+  - port: 8080
+    protocol: TCP
+    targetPort: 8080
+    name: http
   selector:
-    run: iot-server-demo
-
+    run: iot-server-demo-worker

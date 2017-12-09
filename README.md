@@ -52,7 +52,7 @@ Streams and windowing].
 
 ### TODO
   * Actor persistence and serialization
-  * Cluster deployment with sharding and discovery
+  * ~~Cluster deployment with sharding and discovery~~
   * Move Kafka offset persistence to after the windows processing
   * AUTH
   * HTTP2

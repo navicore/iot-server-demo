@@ -2,10 +2,10 @@ apiVersion: config.istio.io/v1alpha2
 ## Deny all access from istio-ingress
 kind: RouteRule
 metadata:
-  name: iot-server-demo-deny-route
+  name: iot-server-demo-seed-deny-route
 spec:
   destination:
-    name: iot-server-demo
+    name: iot-server-demo-seed
   match:
     # Limit this rule to istio ingress pods only
     source:
@@ -28,7 +28,7 @@ metadata:
   name: status-route
 spec:
   destination:
-    name: iot-server-demo
+    name: iot-server-demo-seed
   match:
     # Limit this rule to istio ingress pods only
     source:

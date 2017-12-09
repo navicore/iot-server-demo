@@ -18,7 +18,8 @@ import scala.concurrent.ExecutionContextExecutor
 
 object Conf extends Conf with LazyLogging {
 
-  implicit val actorSystem: ActorSystem = ActorSystem("akka_kafka_demo")
+  implicit val actorSystem: ActorSystem = ActorSystem(appName, conf)
+
   implicit val ec: ExecutionContextExecutor = actorSystem.dispatcher
 
   val decider: Supervision.Decider = {
@@ -62,9 +63,24 @@ object Conf extends Conf with LazyLogging {
 
 trait Conf {
 
-  val conf: Config = ConfigFactory.load()
+  val origConf: Config = ConfigFactory.load()
+  val overrides: Config = ConfigFactory.parseString(s"""
+      # override seed node 0
+      akka.cluster.seed-nodes.0="${origConf.getString("main.akkaSeed0")}"
+      akka.cluster.seed-nodes.1="${origConf.getString("main.akkaSeed1")}"
+      """)
+
+  val conf: Config = overrides.withFallback(ConfigFactory.load())
 
   val appName: String = conf.getString("main.appName")
+  val isSeed: Boolean = conf.getString("main.role").contains("seed")
+  val isStreamer: Boolean = conf.getString("main.role").contains("streamer")
+  val akkaSeed0: String = conf.getString("main.akkaSeed0")
+  val akkaSeed1: String = conf.getString("main.akkaSeed1")
+
+  val locationServiceShards: Int = conf.getInt("main.locationServiceShards")
+  val deviceServiceShards: Int = conf.getInt("main.deviceServiceShards")
+
   val bootstrap: String = conf.getString("kafka.bootstrap")
   val consumerGroup: String = conf.getString("kafka.consumerGroup")
 
