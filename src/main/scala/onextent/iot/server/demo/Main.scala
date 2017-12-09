@@ -1,5 +1,6 @@
 package onextent.iot.server.demo
 
+import akka.serialization._
 import akka.actor.ActorRef
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.server.Directives

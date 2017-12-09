@@ -33,6 +33,9 @@ libraryDependencies ++= Seq(
     "com.typesafe.akka" %% "akka-http-spray-json" % akkaHttpVersion,
     "com.typesafe.akka" %% "akka-persistence" % akkaVersion,
 
+    "com.sksamuel.avro4s" %% "avro4s-core" % "1.8.0",
+    "com.sksamuel.avro4s" %% "avro4s-macros" % "1.8.0",
+
     "com.typesafe.akka" %% "akka-persistence-cassandra" % "0.59",
 
     "org.json4s" %% "json4s-native" % "3.5.3",
