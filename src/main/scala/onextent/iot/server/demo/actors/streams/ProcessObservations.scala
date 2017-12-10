@@ -53,6 +53,7 @@ object ProcessObservations extends LazyLogging {
       .map(ExtractObservations())
       .mapAsync(parallelism) { EnrichWithDevice(deviceService) }
       .mapConcat(FilterDevicesWithLocations())
+      // write to kafka for downstream rollup
       .map { ForwardableMessage(_) }
       .runWith(Producer.commitableSink(producerSettings))
 

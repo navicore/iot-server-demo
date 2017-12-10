@@ -9,24 +9,24 @@ import akka.util.Timeout
 import com.typesafe.scalalogging.LazyLogging
 import onextent.iot.server.demo.Conf._
 import onextent.iot.server.demo.actors.streams.functions._
-import onextent.iot.server.demo.models.{Device, EnrichedAssessment}
+import onextent.iot.server.demo.models.Assessment
 
-object ProcessDeviceAssessments extends LazyLogging {
+object ProcessLocationAssessments extends LazyLogging {
 
-  def apply(locationService: ActorRef)(implicit timeout: Timeout): Unit = {
+  def apply(fleetService: ActorRef)(implicit timeout: Timeout): Unit = {
 
     // read from Kafka and commit offsets for now - todo: coordinate offsets with WindowClose
 
     val eventStream = Consumer
       .committableSource(consumerSettings,
-                         Subscriptions.topics(deviceAssessmentsTopic))
-      .map(ExtractDeviceAssessments())
+                         Subscriptions.topics(locationAssessmentsTopic))
+      .map(ExtractAssessments())
       .mapAsync(parallelism)(CommitKafkaOffset()) //todo: integrate with batches of committable offsets per window
 
     // insert window open and close commands
 
     val commandStream = eventStream.statefulMapConcat { () =>
-      val generator = new DeviceAssessmentCommandGenerator()
+      val generator = new AssessmentCommandGenerator()
       ev =>
         generator.forEvent(ev)
     }
@@ -42,7 +42,8 @@ object ProcessDeviceAssessments extends LazyLogging {
         case (agg, CloseWindow(_)) => agg
         case (agg, AddToWindow(ev, _)) =>
           agg.copy(values = ev match {
-            case (holder: EnrichedAssessment[Device] @unchecked, _) => holder.assessment.value :: agg.values
+            case (holder: (Assessment, UUID) @unchecked, _) =>
+              holder._1.value :: agg.values
             case _ => throw new IllegalStateException()
           })
       }
@@ -52,8 +53,7 @@ object ProcessDeviceAssessments extends LazyLogging {
 
     windowStreams.mergeSubstreams
       .mapConcat(AggregatesToAssessments())
-      .mapAsync(parallelism)(UpdateLocationActor(locationService))
-      // todo: enrich with fleetId of location
+      .mapAsync(parallelism)(UpdateFleetActor(fleetService))
       // write to kafka for downstream rollup
       .map { AssessmentProducerMessage(_) }
       .runWith(Producer.plainSink(producerSettings))

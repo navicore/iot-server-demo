@@ -6,6 +6,12 @@ import java.util.UUID
 import com.typesafe.scalalogging.LazyLogging
 import onextent.iot.server.demo.models.Assessment
 
+// todo: make a helper for agg of agg where only counts of counts, mins of mins, avgs of avgs, and maxs of maxs are forwarded
+// todo: make a helper for agg of agg where only counts of counts, mins of mins, avgs of avgs, and maxs of maxs are forwarded
+// todo: make a helper for agg of agg where only counts of counts, mins of mins, avgs of avgs, and maxs of maxs are forwarded
+// todo: make a helper for agg of agg where only counts of counts, mins of mins, avgs of avgs, and maxs of maxs are forwarded
+// todo: make a helper for agg of agg where only counts of counts, mins of mins, avgs of avgs, and maxs of maxs are forwarded
+// todo: make a helper for agg of agg where only counts of counts, mins of mins, avgs of avgs, and maxs of maxs are forwarded
 object AggregatesToAssessments extends LazyLogging {
 
   def apply()(agg: AggregateEventData): List[(Assessment, UUID)] = {

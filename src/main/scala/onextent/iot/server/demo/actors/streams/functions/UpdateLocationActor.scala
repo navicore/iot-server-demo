@@ -7,7 +7,7 @@ import akka.pattern.ask
 import akka.util.Timeout
 import com.typesafe.scalalogging.LazyLogging
 import onextent.iot.server.demo.Conf
-import onextent.iot.server.demo.actors.location.LocationActor.SetLocationAssessment
+import onextent.iot.server.demo.actors.location.LocationActor.{LocationAssessmentAck, SetLocationAssessment}
 import onextent.iot.server.demo.models.Assessment
 import onextent.iot.server.demo.models.functions.JsonSupport
 
@@ -19,8 +19,10 @@ object UpdateLocationActor extends LazyLogging with Conf with JsonSupport {
                                        ec: ExecutionContext)
     : ((Assessment, UUID)) => Future[(Assessment, UUID)] =
     {
-      case x@(assessment, location) =>
-        (locationService ask SetLocationAssessment(assessment, location)).map(_ => x)
+      case _@(assessment, locationId) =>
+        (locationService ask SetLocationAssessment(assessment, locationId)).map {
+            case LocationAssessmentAck(location) if location.fleet.isDefined => (assessment, location.fleet.get) //ejs todo: don't do this
+        }
     }
 
 }
