@@ -6,12 +6,10 @@ import java.util.UUID
 import com.typesafe.scalalogging.LazyLogging
 import onextent.iot.server.demo.models.Assessment
 
-// todo: make a helper for agg of agg where only counts of counts, mins of mins, avgs of avgs, and maxs of maxs are forwarded
-// todo: make a helper for agg of agg where only counts of counts, mins of mins, avgs of avgs, and maxs of maxs are forwarded
-// todo: make a helper for agg of agg where only counts of counts, mins of mins, avgs of avgs, and maxs of maxs are forwarded
-// todo: make a helper for agg of agg where only counts of counts, mins of mins, avgs of avgs, and maxs of maxs are forwarded
-// todo: make a helper for agg of agg where only counts of counts, mins of mins, avgs of avgs, and maxs of maxs are forwarded
-// todo: make a helper for agg of agg where only counts of counts, mins of mins, avgs of avgs, and maxs of maxs are forwarded
+private object round {
+  def apply(d: Double): Double = Math.round(d * 100.0) / 100.0
+}
+
 object AggregatesToAssessments extends LazyLogging {
 
   def apply()(agg: AggregateEventData): List[(Assessment, UUID)] = {
@@ -25,8 +23,6 @@ object AggregatesToAssessments extends LazyLogging {
         val hour = "%02d".format(from.getHour)
 
         val minute = "%02d".format(from.getMinute / 10 * 10)
-
-        def round(d: Double) = Math.round(d * 100.0) / 100.0
 
         List(
           (Assessment(s"${rootName}_${hour}_${minute}_count",
@@ -54,4 +50,37 @@ object AggregatesToAssessments extends LazyLogging {
 
   }
 
+}
+
+object AggrergateAggregatesToAssessments extends LazyLogging {
+
+  def round(d: Double): Double = Math.round(d * 100.0) / 100.0
+
+  def apply()(agg: AggregateEventData): List[(Assessment, UUID)] = {
+
+    agg.w match {
+
+      case (_, stopTime, rootName, locationId) =>
+        val from: ZonedDateTime = ZonedDateTime.from(
+          Instant.ofEpochMilli(stopTime).atOffset(ZoneOffset.UTC))
+
+        rootName match {
+          case n if n.contains("_count") =>
+            List((Assessment(s"$rootName", agg.values.sum, from), locationId))
+          case n if n.contains("_sum") =>
+            List((Assessment(s"$rootName", agg.values.sum, from), locationId))
+          case n if n.contains("_ave") =>
+            List(
+              (Assessment(s"$rootName",
+                          round(agg.values.sum / agg.values.length),
+                          from),
+               locationId))
+          case n if n.contains("_min") =>
+            List((Assessment(s"$rootName", agg.values.min, from), locationId))
+          case n if n.contains("_max") =>
+            List((Assessment(s"$rootName", agg.values.max, from), locationId))
+          case _ => List()
+        }
+    }
+  }
 }

@@ -53,7 +53,7 @@ object ProcessLocationAssessments extends LazyLogging {
     // convert to assessments and send them to location actors
 
     windowStreams.mergeSubstreams
-      .mapConcat(AggregatesToAssessments())
+      .mapConcat(AggrergateAggregatesToAssessments())
       .mapAsync(parallelism)(UpdateFleetActor(fleetService))
       // write to kafka for downstream rollup
       .map { AssessmentProducerMessage(_) }
