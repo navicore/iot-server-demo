@@ -43,7 +43,8 @@ object ProcessLocationAssessments extends LazyLogging {
         case (agg, AddToWindow(ev, _)) =>
           agg.copy(values = ev match {
             case (holder: (Assessment, UUID) @unchecked, _) =>
-              holder._1.value :: agg.values
+              val (assessment, _) = holder
+              assessment.value :: agg.values
             case _ => throw new IllegalStateException()
           })
       }

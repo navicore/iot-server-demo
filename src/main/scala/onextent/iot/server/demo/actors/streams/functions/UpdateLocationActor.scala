@@ -17,12 +17,16 @@ object UpdateLocationActor extends LazyLogging with Conf with JsonSupport {
 
   def apply(locationService: ActorRef)(implicit timeout: Timeout,
                                        ec: ExecutionContext)
-    : ((Assessment, UUID)) => Future[(Assessment, UUID)] =
-    {
-      case _@(assessment, locationId) =>
-        (locationService ask SetLocationAssessment(assessment, locationId)).map {
-            case LocationAssessmentAck(location) if location.fleet.isDefined => (assessment, location.fleet.get) //ejs todo: don't do this
-        }
-    }
+    : ((Assessment, UUID)) => Future[(Assessment, UUID)] = {
+    case _ @(assessment, locationId) =>
+      (locationService ask SetLocationAssessment(assessment, locationId)).map {
+        case LocationAssessmentAck(location) if location.fleet.isDefined =>
+          location.fleet match {
+            case Some(fleetId) => (assessment, fleetId)
+            case _             => throw new IllegalStateException()
+          }
+        case _ => throw new IllegalStateException()
+      }
+  }
 
 }
