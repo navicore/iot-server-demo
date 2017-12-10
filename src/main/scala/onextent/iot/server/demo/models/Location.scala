@@ -7,6 +7,7 @@ case class Location(name: String,
                     id: UUID = UUID.randomUUID(),
                     latitude: Double,
                     longitude: Double,
+                    fleet: Option[UUID] = None,
                     created: ZonedDateTime = ZonedDateTime.now(ZoneOffset.UTC))
 
 object MkLocation {
@@ -15,7 +16,8 @@ object MkLocation {
     Location(locationReq.name,
              locationReq.id.getOrElse(UUID.randomUUID()),
              locationReq.latitude,
-             locationReq.longitude)
+             locationReq.longitude,
+             locationReq.fleet)
   }
 
 }
@@ -23,4 +25,5 @@ object MkLocation {
 final case class LocationRequest(name: String,
                                  latitude: Double,
                                  longitude: Double,
-                                 id: Option[UUID])
+                                 id: Option[UUID],
+                                 fleet: Option[UUID])

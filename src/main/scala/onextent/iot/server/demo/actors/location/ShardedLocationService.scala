@@ -5,15 +5,15 @@ import akka.cluster.sharding.{ClusterSharding, ClusterShardingSettings}
 import onextent.iot.server.demo.http.functions.HttpSupport
 
 object ShardedLocationService {
-  def props = Props(new ShardedLocationService)
+  def props(fleetService: ActorRef) = Props(new ShardedLocationService(fleetService))
   def name = "shardedLocationService"
 }
 
-class ShardedLocationService extends Actor with HttpSupport {
+class ShardedLocationService(fleetService: ActorRef) extends Actor with HttpSupport {
 
   ClusterSharding(context.system).start(
     LocationService.shardName,
-    LocationService.props,
+    LocationService.props(fleetService),
     ClusterShardingSettings(context.system),
     LocationService.extractEntityId,
     LocationService.extractShardId

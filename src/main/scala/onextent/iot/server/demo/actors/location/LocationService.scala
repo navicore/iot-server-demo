@@ -7,12 +7,13 @@ import akka.cluster.sharding.ShardRegion
 import akka.util.Timeout
 import com.typesafe.scalalogging.LazyLogging
 import onextent.iot.server.demo.Conf
+import onextent.iot.server.demo.actors.fleet.FleetActor.AddLocationToFleet
 import onextent.iot.server.demo.actors.location.LocationActor._
 import onextent.iot.server.demo.models.Location
 
 object LocationService extends Conf {
 
-  def props(implicit timeout: Timeout) = Props(new LocationService)
+  def props(fleetService: ActorRef)(implicit timeout: Timeout) = Props(new LocationService(fleetService))
   def shardName = "locationService"
 
   def SHARDS: Int = locationServiceShards
@@ -40,7 +41,7 @@ object LocationService extends Conf {
   }
 }
 
-class LocationService(implicit timeout: Timeout)
+class LocationService(fleetService: ActorRef)(implicit timeout: Timeout)
     extends Actor
     with LazyLogging {
 
@@ -49,6 +50,11 @@ class LocationService(implicit timeout: Timeout)
   def create(actorId: String, location: Location): Unit = {
     context.actorOf(LocationActor.props(location), actorId)
     sender() ! location
+    location.fleet match {
+      case Some(fleetId) =>
+        fleetService ! AddLocationToFleet(location, fleetId)
+      case _ =>
+    }
   }
 
   override def receive: PartialFunction[Any, Unit] = {

@@ -51,6 +51,7 @@ object ProcessDeviceAssessments extends LazyLogging {
     windowStreams.mergeSubstreams
       .mapConcat(AggregatesToAssessments())
       .mapAsync(parallelism)(UpdateLocationActor(locationService))
+      //ejs todo: add a kafka publish here for the "ProcessLocationAssessments" stream
       .runForeach { ev =>
         logger.debug(s"assessment: $ev")
       }

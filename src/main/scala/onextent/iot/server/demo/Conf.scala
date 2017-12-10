@@ -75,6 +75,7 @@ trait Conf {
   val akkaSeed0: String = conf.getString("main.akkaSeed0")
   val akkaSeed1: String = conf.getString("main.akkaSeed1")
 
+  val fleetServiceShards: Int = conf.getInt("main.fleetServiceShards")
   val locationServiceShards: Int = conf.getInt("main.locationServiceShards")
   val deviceServiceShards: Int = conf.getInt("main.deviceServiceShards")
 

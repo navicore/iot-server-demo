@@ -8,11 +8,19 @@ import akka.serialization.SerializerWithStringManifest
 import com.sksamuel.avro4s._
 import com.typesafe.scalalogging.LazyLogging
 import onextent.iot.server.demo.actors.device.DeviceActor._
+import onextent.iot.server.demo.actors.fleet.FleetActor._
 import onextent.iot.server.demo.actors.location.LocationActor._
-import onextent.iot.server.demo.models.{Device, Location}
+import onextent.iot.server.demo.models.{Device, Fleet, Location}
 import org.apache.avro.Schema
 import org.apache.avro.Schema.Field
 
+// ejs todo: get rid of all this dupe code. can't use normal generics due to avro4s macros not expanding parameterized types
+// ejs todo: get rid of all this dupe code. can't use normal generics due to avro4s macros not expanding parameterized types
+// ejs todo: get rid of all this dupe code. can't use normal generics due to avro4s macros not expanding parameterized types
+// ejs todo: get rid of all this dupe code. can't use normal generics due to avro4s macros not expanding parameterized types
+// ejs todo: get rid of all this dupe code. can't use normal generics due to avro4s macros not expanding parameterized types
+// ejs todo: get rid of all this dupe code. can't use normal generics due to avro4s macros not expanding parameterized types
+// ejs todo: get rid of all this dupe code. can't use normal generics due to avro4s macros not expanding parameterized types
 // ejs todo: get rid of all this dupe code. can't use normal generics due to avro4s macros not expanding parameterized types
 object AvroSupport extends JsonSupport with LazyLogging {
 
@@ -59,7 +67,6 @@ object AvroSupport extends JsonSupport with LazyLogging {
           s"Unable to handle manifest $manifest, required $Manifest")
     }
   }
-  //  final case class AddDeviceToLocation(device: Device, locationId: UUID)
   class AddDeviceToLocationSerializer
       extends AvroSerializer[AddDeviceToLocation] {
     override def identifier: Int = 100011
@@ -84,7 +91,6 @@ object AvroSupport extends JsonSupport with LazyLogging {
           s"Unable to handle manifest $manifest, required $Manifest")
     }
   }
-  //  final case class CreateDevice(device: Device)
   class CreateDeviceSerializer extends AvroSerializer[CreateDevice] {
     override def identifier: Int = 100012
     final val Manifest = classOf[CreateDevice].getName
@@ -108,7 +114,6 @@ object AvroSupport extends JsonSupport with LazyLogging {
           s"Unable to handle manifest $manifest, required $Manifest")
     }
   }
-  //  final case class CreateLocation(location: Location)
   class CreateLocationSerializer extends AvroSerializer[CreateLocation] {
     override def identifier: Int = 100013
     final val Manifest = classOf[CreateLocation].getName
@@ -132,7 +137,6 @@ object AvroSupport extends JsonSupport with LazyLogging {
           s"Unable to handle manifest $manifest, required $Manifest")
     }
   }
-  //  final case class DeviceAlreadyExists(device: Device)
   class DeviceAlreadyExistsSerializer
       extends AvroSerializer[DeviceAlreadyExists] {
     override def identifier: Int = 100014
@@ -157,7 +161,6 @@ object AvroSupport extends JsonSupport with LazyLogging {
           s"Unable to handle manifest $manifest, required $Manifest")
     }
   }
-  //  final case class DeviceAssessmentAck(device: Device)
   class DeviceAssessmentAckSerializer
       extends AvroSerializer[DeviceAssessmentAck] {
     override def identifier: Int = 100015
@@ -182,7 +185,6 @@ object AvroSupport extends JsonSupport with LazyLogging {
           s"Unable to handle manifest $manifest, required $Manifest")
     }
   }
-  //  final case class GetDevice(id: UUID)
   class GetDeviceSerializer extends AvroSerializer[GetDevice] {
     override def identifier: Int = 100016
     final val Manifest = classOf[GetDevice].getName
@@ -206,7 +208,6 @@ object AvroSupport extends JsonSupport with LazyLogging {
           s"Unable to handle manifest $manifest, required $Manifest")
     }
   }
-  //  final case class GetDeviceAssessments(id: UUID)
   class GetDeviceAssessmentsSerializer
       extends AvroSerializer[GetDeviceAssessments] {
     override def identifier: Int = 100017
@@ -231,7 +232,6 @@ object AvroSupport extends JsonSupport with LazyLogging {
           s"Unable to handle manifest $manifest, required $Manifest")
     }
   }
-  //  final case class GetLocation(id: UUID)
   class GetLocationSerializer extends AvroSerializer[GetLocation] {
     override def identifier: Int = 100018
     final val Manifest = classOf[GetLocation].getName
@@ -255,7 +255,6 @@ object AvroSupport extends JsonSupport with LazyLogging {
           s"Unable to handle manifest $manifest, required $Manifest")
     }
   }
-  //  final case class GetLocationAssessments(id: UUID)
   class GetLocationAssessmentsSerializer
       extends AvroSerializer[GetLocationAssessments] {
     override def identifier: Int = 100019
@@ -280,7 +279,6 @@ object AvroSupport extends JsonSupport with LazyLogging {
           s"Unable to handle manifest $manifest, required $Manifest")
     }
   }
-  //  final case class GetLocationDevices(id: UUID)
   class GetLocationDevicesSerializer
       extends AvroSerializer[GetLocationDevices] {
     override def identifier: Int = 100020
@@ -305,7 +303,6 @@ object AvroSupport extends JsonSupport with LazyLogging {
           s"Unable to handle manifest $manifest, required $Manifest")
     }
   }
-  //  final case class LocationAlreadyExists(location: Location)
   class LocationAlreadyExistsSerializer
       extends AvroSerializer[LocationAlreadyExists] {
     override def identifier: Int = 100021
@@ -330,7 +327,6 @@ object AvroSupport extends JsonSupport with LazyLogging {
           s"Unable to handle manifest $manifest, required $Manifest")
     }
   }
-  //  final case class LocationAssessmentAck(device: Location)
   class LocationAssessmentAckSerializer
       extends AvroSerializer[LocationAssessmentAck] {
     override def identifier: Int = 100022
@@ -355,7 +351,6 @@ object AvroSupport extends JsonSupport with LazyLogging {
           s"Unable to handle manifest $manifest, required $Manifest")
     }
   }
-  //  final case class SetLocationAssessment(assessment: Assessment, locationId: UUID)
   class SetLocationAssessmentSerializer
       extends AvroSerializer[SetLocationAssessment] {
     override def identifier: Int = 100023
@@ -418,6 +413,259 @@ object AvroSupport extends JsonSupport with LazyLogging {
         FromRecord[Location]
       if (Manifest == manifest) {
         val is = AvroInputStream.binary[Location](bytes)
+        val events = is.iterator.toList
+        is.close()
+        events.head
+      } else
+        throw new IllegalArgumentException(
+          s"Unable to handle manifest $manifest, required $Manifest")
+    }
+  }
+  class FleetSerializer extends AvroSerializer[Fleet] {
+    override def identifier: Int = 100026
+    final val Manifest = classOf[Fleet].getName
+    override def toBinary(o: AnyRef): Array[Byte] = {
+      val output = new ByteArrayOutputStream
+      val avro = AvroOutputStream.binary[Fleet](output)
+      avro.write(o.asInstanceOf[Fleet])
+      avro.close()
+      output.toByteArray
+    }
+    override def fromBinary(bytes: Array[Byte], manifest: String): AnyRef = {
+      implicit val fromRec: FromRecord[Fleet] =
+        FromRecord[Fleet]
+      if (Manifest == manifest) {
+        val is = AvroInputStream.binary[Fleet](bytes)
+        val events = is.iterator.toList
+        is.close()
+        events.head
+      } else
+        throw new IllegalArgumentException(
+          s"Unable to handle manifest $manifest, required $Manifest")
+    }
+  }
+  class GetFleetSerializer extends AvroSerializer[GetFleet] {
+    override def identifier: Int = 100026
+    final val Manifest = classOf[GetFleet].getName
+    override def toBinary(o: AnyRef): Array[Byte] = {
+      val output = new ByteArrayOutputStream
+      val avro = AvroOutputStream.binary[GetFleet](output)
+      avro.write(o.asInstanceOf[GetFleet])
+      avro.close()
+      output.toByteArray
+    }
+    override def fromBinary(bytes: Array[Byte], manifest: String): AnyRef = {
+      implicit val fromRec: FromRecord[GetFleet] =
+        FromRecord[GetFleet]
+      if (Manifest == manifest) {
+        val is = AvroInputStream.binary[GetFleet](bytes)
+        val events = is.iterator.toList
+        is.close()
+        events.head
+      } else
+        throw new IllegalArgumentException(
+          s"Unable to handle manifest $manifest, required $Manifest")
+    }
+  }
+  class GetFleetLocationsSerializer extends AvroSerializer[GetFleetLocations] {
+    override def identifier: Int = 100026
+    final val Manifest = classOf[GetFleetLocations].getName
+    override def toBinary(o: AnyRef): Array[Byte] = {
+      val output = new ByteArrayOutputStream
+      val avro = AvroOutputStream.binary[GetFleetLocations](output)
+      avro.write(o.asInstanceOf[GetFleetLocations])
+      avro.close()
+      output.toByteArray
+    }
+    override def fromBinary(bytes: Array[Byte], manifest: String): AnyRef = {
+      implicit val fromRec: FromRecord[GetFleetLocations] =
+        FromRecord[GetFleetLocations]
+      if (Manifest == manifest) {
+        val is = AvroInputStream.binary[GetFleetLocations](bytes)
+        val events = is.iterator.toList
+        is.close()
+        events.head
+      } else
+        throw new IllegalArgumentException(
+          s"Unable to handle manifest $manifest, required $Manifest")
+    }
+  }
+  class AddLocationToFleetSerializer extends AvroSerializer[AddLocationToFleet] {
+    override def identifier: Int = 100026
+    final val Manifest = classOf[AddLocationToFleet].getName
+    override def toBinary(o: AnyRef): Array[Byte] = {
+      val output = new ByteArrayOutputStream
+      val avro = AvroOutputStream.binary[AddLocationToFleet](output)
+      avro.write(o.asInstanceOf[AddLocationToFleet])
+      avro.close()
+      output.toByteArray
+    }
+    override def fromBinary(bytes: Array[Byte], manifest: String): AnyRef = {
+      implicit val fromRec: FromRecord[AddLocationToFleet] =
+        FromRecord[AddLocationToFleet]
+      if (Manifest == manifest) {
+        val is = AvroInputStream.binary[AddLocationToFleet](bytes)
+        val events = is.iterator.toList
+        is.close()
+        events.head
+      } else
+        throw new IllegalArgumentException(
+          s"Unable to handle manifest $manifest, required $Manifest")
+    }
+  }
+  class GetFleetFleetsSerializer extends AvroSerializer[GetFleetFleets] {
+    override def identifier: Int = 100026
+    final val Manifest = classOf[GetFleetFleets].getName
+    override def toBinary(o: AnyRef): Array[Byte] = {
+      val output = new ByteArrayOutputStream
+      val avro = AvroOutputStream.binary[GetFleetFleets](output)
+      avro.write(o.asInstanceOf[GetFleetFleets])
+      avro.close()
+      output.toByteArray
+    }
+    override def fromBinary(bytes: Array[Byte], manifest: String): AnyRef = {
+      implicit val fromRec: FromRecord[GetFleetFleets] =
+        FromRecord[GetFleetFleets]
+      if (Manifest == manifest) {
+        val is = AvroInputStream.binary[GetFleetFleets](bytes)
+        val events = is.iterator.toList
+        is.close()
+        events.head
+      } else
+        throw new IllegalArgumentException(
+          s"Unable to handle manifest $manifest, required $Manifest")
+    }
+  }
+  class AddFleetToFleetSerializer extends AvroSerializer[AddFleetToFleet] {
+    override def identifier: Int = 100026
+    final val Manifest = classOf[AddFleetToFleet].getName
+    override def toBinary(o: AnyRef): Array[Byte] = {
+      val output = new ByteArrayOutputStream
+      val avro = AvroOutputStream.binary[AddFleetToFleet](output)
+      avro.write(o.asInstanceOf[AddFleetToFleet])
+      avro.close()
+      output.toByteArray
+    }
+    override def fromBinary(bytes: Array[Byte], manifest: String): AnyRef = {
+      implicit val fromRec: FromRecord[AddFleetToFleet] =
+        FromRecord[AddFleetToFleet]
+      if (Manifest == manifest) {
+        val is = AvroInputStream.binary[AddFleetToFleet](bytes)
+        val events = is.iterator.toList
+        is.close()
+        events.head
+      } else
+        throw new IllegalArgumentException(
+          s"Unable to handle manifest $manifest, required $Manifest")
+    }
+  }
+  class GetFleetAssessmentsSerializer extends AvroSerializer[GetFleetAssessments] {
+    override def identifier: Int = 100026
+    final val Manifest = classOf[GetFleetAssessments].getName
+    override def toBinary(o: AnyRef): Array[Byte] = {
+      val output = new ByteArrayOutputStream
+      val avro = AvroOutputStream.binary[GetFleetAssessments](output)
+      avro.write(o.asInstanceOf[GetFleetAssessments])
+      avro.close()
+      output.toByteArray
+    }
+    override def fromBinary(bytes: Array[Byte], manifest: String): AnyRef = {
+      implicit val fromRec: FromRecord[GetFleetAssessments] =
+        FromRecord[GetFleetAssessments]
+      if (Manifest == manifest) {
+        val is = AvroInputStream.binary[GetFleetAssessments](bytes)
+        val events = is.iterator.toList
+        is.close()
+        events.head
+      } else
+        throw new IllegalArgumentException(
+          s"Unable to handle manifest $manifest, required $Manifest")
+    }
+  }
+  class SetFleetAssessmentSerializer extends AvroSerializer[SetFleetAssessment] {
+    override def identifier: Int = 100026
+    final val Manifest = classOf[SetFleetAssessment].getName
+    override def toBinary(o: AnyRef): Array[Byte] = {
+      val output = new ByteArrayOutputStream
+      val avro = AvroOutputStream.binary[SetFleetAssessment](output)
+      avro.write(o.asInstanceOf[SetFleetAssessment])
+      avro.close()
+      output.toByteArray
+    }
+    override def fromBinary(bytes: Array[Byte], manifest: String): AnyRef = {
+      implicit val fromRec: FromRecord[SetFleetAssessment] =
+        FromRecord[SetFleetAssessment]
+      if (Manifest == manifest) {
+        val is = AvroInputStream.binary[SetFleetAssessment](bytes)
+        val events = is.iterator.toList
+        is.close()
+        events.head
+      } else
+        throw new IllegalArgumentException(
+          s"Unable to handle manifest $manifest, required $Manifest")
+    }
+  }
+  class CreateFleetSerializer extends AvroSerializer[CreateFleet] {
+    override def identifier: Int = 100026
+    final val Manifest = classOf[CreateFleet].getName
+    override def toBinary(o: AnyRef): Array[Byte] = {
+      val output = new ByteArrayOutputStream
+      val avro = AvroOutputStream.binary[CreateFleet](output)
+      avro.write(o.asInstanceOf[CreateFleet])
+      avro.close()
+      output.toByteArray
+    }
+    override def fromBinary(bytes: Array[Byte], manifest: String): AnyRef = {
+      implicit val fromRec: FromRecord[CreateFleet] =
+        FromRecord[CreateFleet]
+      if (Manifest == manifest) {
+        val is = AvroInputStream.binary[CreateFleet](bytes)
+        val events = is.iterator.toList
+        is.close()
+        events.head
+      } else
+        throw new IllegalArgumentException(
+          s"Unable to handle manifest $manifest, required $Manifest")
+    }
+  }
+  class FleetAlreadyExistsSerializer extends AvroSerializer[FleetAlreadyExists] {
+    override def identifier: Int = 100026
+    final val Manifest = classOf[FleetAlreadyExists].getName
+    override def toBinary(o: AnyRef): Array[Byte] = {
+      val output = new ByteArrayOutputStream
+      val avro = AvroOutputStream.binary[FleetAlreadyExists](output)
+      avro.write(o.asInstanceOf[FleetAlreadyExists])
+      avro.close()
+      output.toByteArray
+    }
+    override def fromBinary(bytes: Array[Byte], manifest: String): AnyRef = {
+      implicit val fromRec: FromRecord[FleetAlreadyExists] =
+        FromRecord[FleetAlreadyExists]
+      if (Manifest == manifest) {
+        val is = AvroInputStream.binary[FleetAlreadyExists](bytes)
+        val events = is.iterator.toList
+        is.close()
+        events.head
+      } else
+        throw new IllegalArgumentException(
+          s"Unable to handle manifest $manifest, required $Manifest")
+    }
+  }
+  class FleetAssessmentAckSerializer extends AvroSerializer[FleetAssessmentAck] {
+    override def identifier: Int = 100026
+    final val Manifest = classOf[FleetAssessmentAck].getName
+    override def toBinary(o: AnyRef): Array[Byte] = {
+      val output = new ByteArrayOutputStream
+      val avro = AvroOutputStream.binary[FleetAssessmentAck](output)
+      avro.write(o.asInstanceOf[FleetAssessmentAck])
+      avro.close()
+      output.toByteArray
+    }
+    override def fromBinary(bytes: Array[Byte], manifest: String): AnyRef = {
+      implicit val fromRec: FromRecord[FleetAssessmentAck] =
+        FromRecord[FleetAssessmentAck]
+      if (Manifest == manifest) {
+        val is = AvroInputStream.binary[FleetAssessmentAck](bytes)
         val events = is.iterator.toList
         is.close()
         events.head
