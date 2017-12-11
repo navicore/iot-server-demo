@@ -29,7 +29,8 @@ Streams and windowing].
 
 ### To Run
 
-* use [these commands to](https://gist.github.com/navicore/017c6ab1d735596cecc2732e2faaa0dd) to run Kafka with Docker
+* [run Kafka with Docker]
+* [run Cassandra with Docker]
 * `sbt run`
 * see `examples/get.rest` for API usage examples
 * see `application.conf` for config and ENV VAR details
@@ -44,14 +45,14 @@ Streams and windowing].
   * Sliding windows with watermarking
 
 ### Entities
-  * Observation - a named measure of something
+  * Observation - a named time-stamped measurement
   * Device - a source of observations
   * Location - a collection of devices
-  * Fleet - a collection of locations (tbd)
+  * Fleet - a collection of locations and fleets
   * Assessment - a processed observation or collection of observations
 
 ### TODO
-  * Actor persistence and serialization
+  * ~~Actor persistence and serialization~~
   * ~~Cluster deployment with sharding and discovery~~
   * Move Kafka offset persistence to after the windows processing
   * AUTH
@@ -60,4 +61,6 @@ Streams and windowing].
   * Parameterize the window size, step, and watermarking settings
 
 [post about Akka Streams and windowing]: https://softwaremill.com/windowing-data-in-akka-streams/
+[run Kafka with Docker]: https://gist.github.com/navicore/017c6ab1d735596cecc2732e2faaa0dd
+[run Cassandra with Docker]: https://gist.github.com/navicore/6116395a56224d608b979053efae5981
 
