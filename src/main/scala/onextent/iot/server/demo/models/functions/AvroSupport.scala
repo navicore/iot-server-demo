@@ -10,7 +10,7 @@ import com.typesafe.scalalogging.LazyLogging
 import onextent.iot.server.demo.actors.device.DeviceActor._
 import onextent.iot.server.demo.actors.fleet.FleetActor._
 import onextent.iot.server.demo.actors.location.LocationActor._
-import onextent.iot.server.demo.models.{Device, Fleet, Location}
+import onextent.iot.server.demo.models.{Assessment, Device, Fleet, Location}
 import org.apache.avro.Schema
 import org.apache.avro.Schema.Field
 
@@ -445,7 +445,7 @@ object AvroSupport extends JsonSupport with LazyLogging {
     }
   }
   class GetFleetSerializer extends AvroSerializer[GetFleet] {
-    override def identifier: Int = 100026
+    override def identifier: Int = 100027
     final val maniFest = classOf[GetFleet].getName
     override def toBinary(o: AnyRef): Array[Byte] = {
       val output = new ByteArrayOutputStream
@@ -468,7 +468,7 @@ object AvroSupport extends JsonSupport with LazyLogging {
     }
   }
   class GetFleetLocationsSerializer extends AvroSerializer[GetFleetLocations] {
-    override def identifier: Int = 100026
+    override def identifier: Int = 100028
     final val maniFest = classOf[GetFleetLocations].getName
     override def toBinary(o: AnyRef): Array[Byte] = {
       val output = new ByteArrayOutputStream
@@ -491,7 +491,7 @@ object AvroSupport extends JsonSupport with LazyLogging {
     }
   }
   class AddLocationToFleetSerializer extends AvroSerializer[AddLocationToFleet] {
-    override def identifier: Int = 100026
+    override def identifier: Int = 100029
     final val maniFest = classOf[AddLocationToFleet].getName
     override def toBinary(o: AnyRef): Array[Byte] = {
       val output = new ByteArrayOutputStream
@@ -514,7 +514,7 @@ object AvroSupport extends JsonSupport with LazyLogging {
     }
   }
   class GetFleetFleetsSerializer extends AvroSerializer[GetFleetFleets] {
-    override def identifier: Int = 100026
+    override def identifier: Int = 100030
     final val maniFest = classOf[GetFleetFleets].getName
     override def toBinary(o: AnyRef): Array[Byte] = {
       val output = new ByteArrayOutputStream
@@ -537,7 +537,7 @@ object AvroSupport extends JsonSupport with LazyLogging {
     }
   }
   class AddFleetToFleetSerializer extends AvroSerializer[AddFleetToFleet] {
-    override def identifier: Int = 100026
+    override def identifier: Int = 100031
     final val maniFest = classOf[AddFleetToFleet].getName
     override def toBinary(o: AnyRef): Array[Byte] = {
       val output = new ByteArrayOutputStream
@@ -560,7 +560,7 @@ object AvroSupport extends JsonSupport with LazyLogging {
     }
   }
   class GetFleetAssessmentsSerializer extends AvroSerializer[GetFleetAssessments] {
-    override def identifier: Int = 100026
+    override def identifier: Int = 100032
     final val maniFest = classOf[GetFleetAssessments].getName
     override def toBinary(o: AnyRef): Array[Byte] = {
       val output = new ByteArrayOutputStream
@@ -583,7 +583,7 @@ object AvroSupport extends JsonSupport with LazyLogging {
     }
   }
   class SetFleetAssessmentSerializer extends AvroSerializer[SetFleetAssessment] {
-    override def identifier: Int = 100026
+    override def identifier: Int = 100033
     final val maniFest = classOf[SetFleetAssessment].getName
     override def toBinary(o: AnyRef): Array[Byte] = {
       val output = new ByteArrayOutputStream
@@ -606,7 +606,7 @@ object AvroSupport extends JsonSupport with LazyLogging {
     }
   }
   class CreateFleetSerializer extends AvroSerializer[CreateFleet] {
-    override def identifier: Int = 100026
+    override def identifier: Int = 100034
     final val maniFest = classOf[CreateFleet].getName
     override def toBinary(o: AnyRef): Array[Byte] = {
       val output = new ByteArrayOutputStream
@@ -629,7 +629,7 @@ object AvroSupport extends JsonSupport with LazyLogging {
     }
   }
   class FleetAlreadyExistsSerializer extends AvroSerializer[FleetAlreadyExists] {
-    override def identifier: Int = 100026
+    override def identifier: Int = 100035
     final val maniFest = classOf[FleetAlreadyExists].getName
     override def toBinary(o: AnyRef): Array[Byte] = {
       val output = new ByteArrayOutputStream
@@ -652,7 +652,7 @@ object AvroSupport extends JsonSupport with LazyLogging {
     }
   }
   class FleetAssessmentAckSerializer extends AvroSerializer[FleetAssessmentAck] {
-    override def identifier: Int = 100026
+    override def identifier: Int = 100036
     final val maniFest = classOf[FleetAssessmentAck].getName
     override def toBinary(o: AnyRef): Array[Byte] = {
       val output = new ByteArrayOutputStream
@@ -666,6 +666,29 @@ object AvroSupport extends JsonSupport with LazyLogging {
         FromRecord[FleetAssessmentAck]
       if (maniFest == manifest) {
         val is = AvroInputStream.binary[FleetAssessmentAck](bytes)
+        val events = is.iterator.toList
+        is.close()
+        events.head
+      } else
+        throw new IllegalArgumentException(
+          s"Unable to handle manifest $manifest, required $maniFest")
+    }
+  }
+  class AssessmentSerializer extends AvroSerializer[Assessment] {
+    override def identifier: Int = 100027
+    final val maniFest = classOf[Assessment].getName
+    override def toBinary(o: AnyRef): Array[Byte] = {
+      val output = new ByteArrayOutputStream
+      val avro = AvroOutputStream.binary[Assessment](output)
+      avro.write(o.asInstanceOf[Assessment])
+      avro.close()
+      output.toByteArray
+    }
+    override def fromBinary(bytes: Array[Byte], manifest: String): AnyRef = {
+      implicit val fromRec: FromRecord[Assessment] =
+        FromRecord[Assessment]
+      if (maniFest == manifest) {
+        val is = AvroInputStream.binary[Assessment](bytes)
         val events = is.iterator.toList
         is.close()
         events.head

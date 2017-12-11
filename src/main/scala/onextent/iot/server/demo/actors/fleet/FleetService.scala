@@ -81,7 +81,7 @@ class FleetService(implicit timeout: Timeout) extends Actor with LazyLogging {
       def notFound(): Unit =
         logger.warn(
           s"fleet $fleetId not found for assessment $assessment update")
-      context.child(fleetId.toString).fold(notFound())(_ forward assessment)
+      context.child(fleetId.toString).fold(notFound())(_ forward SetFleetAssessment(assessment, fleetId))
 
     case AddLocationToFleet(location, fleetId) =>
       context
