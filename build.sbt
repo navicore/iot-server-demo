@@ -36,7 +36,10 @@ libraryDependencies ++= Seq(
     "com.sksamuel.avro4s" %% "avro4s-core" % "1.8.0",
     "com.sksamuel.avro4s" %% "avro4s-macros" % "1.8.0",
 
-    "com.typesafe.akka" %% "akka-persistence-cassandra" % "0.59",
+    //"com.typesafe.akka" %% "akka-persistence-cassandra" % "0.59",
+
+    "com.datastax.cassandra" % "cassandra-driver-core" % "3.3.2",
+
 
     "org.json4s" %% "json4s-native" % "3.5.3",
     "com.github.nscala-time" %% "nscala-time" % "2.16.0",
