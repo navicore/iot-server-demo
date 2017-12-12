@@ -6,9 +6,9 @@ import akka.http.scaladsl.server.Directives
 import ch.megard.akka.http.cors.scaladsl.CorsDirectives._
 import com.typesafe.scalalogging.LazyLogging
 import onextent.iot.server.demo.Conf._
-import onextent.iot.server.demo.actors.device.ShardedDeviceService
-import onextent.iot.server.demo.actors.fleet.ShardedFleetService
-import onextent.iot.server.demo.actors.location.ShardedLocationService
+import onextent.iot.server.demo.actors.device.{DeviceService, ShardedDeviceService}
+import onextent.iot.server.demo.actors.fleet.{FleetService, ShardedFleetService}
+import onextent.iot.server.demo.actors.location.{LocationService, ShardedLocationService}
 import onextent.iot.server.demo.actors.streams._
 import onextent.iot.server.demo.http.functions.HttpSupport
 import onextent.iot.server.demo.http.{DeviceRoute, FleetRoute, LocationRoute, ObservationRoute}
@@ -16,17 +16,13 @@ import onextent.iot.server.demo.http.{DeviceRoute, FleetRoute, LocationRoute, Ob
 object Main extends App with LazyLogging with HttpSupport with Directives {
 
   val fleetService: ActorRef =
-    actorSystem.actorOf(ShardedFleetService.props,
-                        ShardedFleetService.name)
+  actorSystem.actorOf(ShardedFleetService.props, ShardedFleetService.name)
 
   val locationService: ActorRef =
-    actorSystem.actorOf(ShardedLocationService.props(fleetService),
-                        ShardedLocationService.name)
+  actorSystem.actorOf(ShardedLocationService.props(fleetService), ShardedLocationService.name)
 
   val deviceService: ActorRef =
-    actorSystem.actorOf(ShardedDeviceService.props(locationService),
-                        ShardedDeviceService.name)
-
+  actorSystem.actorOf(ShardedDeviceService.props(locationService), ShardedDeviceService.name)
 
   if (isStreamer) {
     logger.info(s"streamer node.  starting singleton stream ingestors.")
