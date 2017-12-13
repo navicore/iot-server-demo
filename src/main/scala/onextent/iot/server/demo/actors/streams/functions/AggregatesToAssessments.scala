@@ -5,6 +5,16 @@ import java.util.UUID
 
 import com.typesafe.scalalogging.LazyLogging
 import onextent.iot.server.demo.models.Assessment
+import Numeric.Implicits._
+
+private object stdDev {
+  def mean[T: Numeric](xs: Iterable[T]): Double = xs.sum.toDouble / xs.size
+  def variance[T: Numeric](xs: Iterable[T]): Double = {
+    val avg = mean(xs)
+    xs.map(_.toDouble).map(a => math.pow(a - avg, 2)).sum / xs.size
+  }
+  def apply[T: Numeric](xs: Iterable[T]): Double = math.sqrt(variance(xs))
+}
 
 private object round {
   def apply(d: Double): Double = Math.round(d * 100.0) / 100.0
@@ -44,6 +54,10 @@ object AggregatesToAssessments extends LazyLogging {
           (Assessment(s"${rootName}_${hour}_${minute}_max",
                       agg.values.max,
                       from),
+           locationId),
+          (Assessment(s"${rootName}_${hour}_${minute}_stddev",
+                      stdDev(agg.values),
+                      from),
            locationId)
         )
     }
@@ -66,9 +80,13 @@ object AggrergateAggregatesToAssessments extends LazyLogging {
 
         rootName match {
           case n if n.contains("_count") =>
-            List((Assessment(s"$rootName", agg.values.sum, from), locationId))
+            List((Assessment(s"$rootName", agg.values.sum, from), locationId)) ++ List(
+              (Assessment(s"${rootName}_stddev", stdDev(agg.values), from),
+               locationId))
           case n if n.contains("_sum") =>
-            List((Assessment(s"$rootName", agg.values.sum, from), locationId))
+            List((Assessment(s"$rootName", agg.values.sum, from), locationId)) ++ List(
+              (Assessment(s"${rootName}_stddev", stdDev(agg.values), from),
+               locationId))
           case n if n.contains("_ave") =>
             List(
               (Assessment(s"$rootName",
