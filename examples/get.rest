@@ -1,6 +1,6 @@
 #https://52.179.84.250
-https://52.168.27.186
-#http://localhost:8080
+#https://52.168.27.186
+http://localhost:8080
 -k
 Content-Type: application/json; charset=utf-8
 --
@@ -84,6 +84,13 @@ POST /iot/observation
     "deviceId": "814a41d9-6778-4b14-bac6-2dec2d5f4085"
 }
 
+--
+POST /iot/observation
+{
+    "name": "oil_temp",
+    "value": 128.2,
+    "deviceId": "814a41d9-6778-4b14-bac6-2dec2d5f4085"
+}
 
 --
 POST /iot/observation
