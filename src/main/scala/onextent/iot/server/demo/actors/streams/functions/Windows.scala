@@ -55,7 +55,9 @@ class DeviceAssessmentCommandGenerator extends LazyLogging {
 
         watermark = math.max(watermark, assessment.datetime.toInstant.toEpochMilli - maxDelay)
 
+
         if (assessment.datetime.toInstant.toEpochMilli < watermark) {
+          //ejs todo: this is fishy... why is this getting logged now that fleet is implemented?
           logger.warn(
             s"Dropping event with timestamp: ${assessment.datetime}")
           Nil
