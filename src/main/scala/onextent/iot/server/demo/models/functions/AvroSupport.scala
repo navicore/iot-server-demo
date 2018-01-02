@@ -14,6 +14,8 @@ import onextent.iot.server.demo.models.{Assessment, Device, Fleet, Location}
 import org.apache.avro.Schema
 import org.apache.avro.Schema.Field
 
+import scala.reflect.ClassTag
+
 // ejs todo: get rid of all this dupe code. can't use normal generics due to avro4s macros not expanding parameterized types
 // ejs todo: get rid of all this dupe code. can't use normal generics due to avro4s macros not expanding parameterized types
 // ejs todo: get rid of all this dupe code. can't use normal generics due to avro4s macros not expanding parameterized types
@@ -674,8 +676,38 @@ object AvroSupport extends JsonSupport with LazyLogging {
           s"Unable to handle manifest $manifest, required $maniFest")
     }
   }
+
+  // import scala.reflect.runtime.universe._
+  // //abstract class CustomSerializer[T]()(implicit ct: ClassTag[T], wt: WeakTypeTag[T]) extends AvroSerializer[T] {
+  // abstract class CustomSerializer[T]()(implicit ct: ClassTag[T], wt: WeakTypeTag[T]) extends AvroSerializer[T] {
+  //   final val maniFest = ct.runtimeClass.getName
+  //   implicit val schema: SchemaFor[T] = SchemaFor[T]
+  //   override def toBinary(o: AnyRef): Array[Byte] = {
+  //     val output = new ByteArrayOutputStream
+  //     val avro = AvroOutputStream.binary[T](output)
+  //     avro.write(o.asInstanceOf[T])
+  //     avro.close()
+  //     output.toByteArray
+  //   }
+  //   override def fromBinary(bytes: Array[Byte], manifest: String): AnyRef = {
+  //     implicit val fromRec: FromRecord[T] =
+  //       FromRecord[T]
+  //     if (maniFest == manifest) {
+  //       val is = AvroInputStream.binary[T](bytes)
+  //       val events: Seq[T] = is.iterator.toList
+  //       is.close()
+  //       events.head
+  //     } else
+  //       throw new IllegalArgumentException(
+  //         s"Unable to handle manifest $manifest, required $maniFest")
+  //   }
+  // }
+  //
+  // class AssessmentSerializer extends CustomSerializer[Assessment] {
+  //   override def identifier: Int = 100040
+  // }
   class AssessmentSerializer extends AvroSerializer[Assessment] {
-    override def identifier: Int = 100027
+    override def identifier: Int = 100037
     final val maniFest = classOf[Assessment].getName
     override def toBinary(o: AnyRef): Array[Byte] = {
       val output = new ByteArrayOutputStream
@@ -697,4 +729,5 @@ object AvroSupport extends JsonSupport with LazyLogging {
           s"Unable to handle manifest $manifest, required $maniFest")
     }
   }
+
 }

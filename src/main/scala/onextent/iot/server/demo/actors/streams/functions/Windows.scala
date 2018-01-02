@@ -93,7 +93,7 @@ class DeviceAssessmentCommandGenerator extends LazyLogging {
 }
 
 class AssessmentCommandGenerator extends LazyLogging {
-  private val maxDelay = 10.seconds.toMillis
+  private val maxDelay = 10.minutes.toMillis
   private var watermark = 0L
   private val openWindows = mutable.Set[Window]()
 
@@ -105,7 +105,7 @@ class AssessmentCommandGenerator extends LazyLogging {
 
         if (assessment.datetime.toInstant.toEpochMilli < watermark) {
           logger.warn(
-            s"Dropping event with timestamp: ${assessment.datetime}")
+            s"Dropping event ${assessment.name} with timestamp: ${assessment.datetime}")
           Nil
         } else {
           val eventWindows = Window.windowsFor(
