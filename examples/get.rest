@@ -1,16 +1,7 @@
-#https://52.179.84.250
-#https://52.168.27.186
 http://localhost:8080
 -k
 Content-Type: application/json; charset=utf-8
 --
-
---
-POST /iot/fleet
-{
-    "name": "my fleet 1",
-    "id": "773870b3-f8cd-4fc9-988e-c1c0f081f6a7"
-}
 
 --
 GET /iot/fleet/773870b3-f8cd-4fc9-988e-c1c0f081f6a7
@@ -22,26 +13,6 @@ GET /iot/fleet/773870b3-f8cd-4fc9-988e-c1c0f081f6a7/locations
 GET /iot/fleet/773870b3-f8cd-4fc9-988e-c1c0f081f6a7/assessments
 
 --
-POST /iot/location
-{
-    "name": "naviland",
-    "id": "2ddc00b2-5425-47a8-bb87-911942c49886",
-    "fleet": "773870b3-f8cd-4fc9-988e-c1c0f081f6a7",
-    "latitude": 0.1,
-    "longitude": 0.2
-}
-
---
-POST /iot/location
-{
-    "name": "son of naviland",
-    "id": "3ddc00b2-5425-47a8-bb87-911942c49881",
-    "fleet": "773870b3-f8cd-4fc9-988e-c1c0f081f6a7",
-    "latitude": 0.2,
-    "longitude": 0.3
-}
-
---
 GET /iot/location/2ddc00b2-5425-47a8-bb87-911942c49886
 
 --
@@ -50,61 +21,9 @@ GET /iot/location/2ddc00b2-5425-47a8-bb87-911942c49886/assessments
 --
 GET /iot/location/2ddc00b2-5425-47a8-bb87-911942c49886/devices
 
-
---
-POST /iot/device
-{
-    "name": "my device 1",
-    "id": "814a41d9-6778-4b14-bac6-2dec2d5f4085",
-    "location": "2ddc00b2-5425-47a8-bb87-911942c49886",
-    "desc": "important gadget"
-}
-
---
-POST /iot/device
-{
-    "name": "my device 2",
-    "id": "479d2b95-0b62-41ff-8c79-f1d13442a687",
-    "kind": 99,
-    "location": "2ddc00b2-5425-47a8-bb87-911942c49886",
-    "desc": "another important gadget"
-}
-
 --
 GET /iot/device/479d2b95-0b62-41ff-8c79-f1d13442a687
 
 --
 GET /iot/device/479d2b95-0b62-41ff-8c79-f1d13442a687/assessments
-
---
-POST /iot/observation
-{
-    "name": "oil_temp",
-    "value": 120.1,
-    "deviceId": "814a41d9-6778-4b14-bac6-2dec2d5f4085"
-}
-
---
-POST /iot/observation
-{
-    "name": "oil_temp",
-    "value": 128.2,
-    "deviceId": "814a41d9-6778-4b14-bac6-2dec2d5f4085"
-}
-
---
-POST /iot/observation
-{
-    "name": "oil_temp",
-    "value": 140.9,
-    "deviceId": "479d2b95-0b62-41ff-8c79-f1d13442a687"
-}
-
---
-POST /iot/observation
-{
-    "name": "water_level",
-    "value": 0.41,
-    "deviceId": "479d2b95-0b62-41ff-8c79-f1d13442a687"
-}
 
