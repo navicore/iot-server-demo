@@ -11,13 +11,17 @@ import onextent.iot.server.demo.actors.fleet.ShardedFleetService
 import onextent.iot.server.demo.actors.location.ShardedLocationService
 import onextent.iot.server.demo.actors.streams._
 import onextent.iot.server.demo.http.functions.HttpSupport
-import onextent.iot.server.demo.http.{DeviceRoute, FleetRoute, LocationRoute, ObservationRoute}
+import onextent.iot.server.demo.http.{
+  DeviceRoute,
+  FleetRoute,
+  LocationRoute,
+  ObservationRoute
+}
 
 object Main extends App with LazyLogging with HttpSupport with Directives {
 
   val fleetService: ActorRef =
-    actorSystem.actorOf(ShardedFleetService.props,
-                        ShardedFleetService.name)
+    actorSystem.actorOf(ShardedFleetService.props, ShardedFleetService.name)
 
   val locationService: ActorRef =
     actorSystem.actorOf(ShardedLocationService.props(fleetService),
@@ -27,7 +31,6 @@ object Main extends App with LazyLogging with HttpSupport with Directives {
     actorSystem.actorOf(ShardedDeviceService.props(locationService),
                         ShardedDeviceService.name)
 
-
   if (isStreamer) {
     logger.info(s"streamer node.  starting singleton stream ingestors.")
     ProcessObservations(deviceService)
@@ -35,19 +38,32 @@ object Main extends App with LazyLogging with HttpSupport with Directives {
     ProcessLocationAssessments(fleetService)
   }
 
-  val route =
-    HealthCheck ~
-      logRequest(urlpath) {
-        handleErrors {
-          cors(corsSettings) {
-            DeviceRoute(deviceService) ~
-              LocationRoute(locationService) ~
-              FleetRoute(fleetService) ~
-              ObservationRoute()
+  if (isApiServer) {
+    val route =
+      HealthCheck ~
+        logRequest(urlpath) {
+          handleErrors {
+            cors(corsSettings) {
+              DeviceRoute(deviceService) ~
+                LocationRoute(locationService) ~
+                FleetRoute(fleetService)
+            }
           }
         }
-      }
+    Http().bindAndHandle(route, "0.0.0.0", apiPort)
+  }
 
-  Http().bindAndHandle(route, "0.0.0.0", port)
+  if (isIngestServer) {
+    val route =
+      HealthCheck ~
+        logRequest(urlpath) {
+          handleErrors {
+            cors(corsSettings) {
+              ObservationRoute()
+            }
+          }
+        }
+    Http().bindAndHandle(route, "0.0.0.0", ingestPort)
+  }
 
 }

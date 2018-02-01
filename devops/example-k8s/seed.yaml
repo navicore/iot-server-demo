@@ -29,7 +29,7 @@ spec:
         - name: AKKA_SEED1
           value: "akka.tcp://IotServerDemo@iot-server-demo-seed-1.iot-server-demo-seed:2551"
         - name: ROLE
-          value: "seed"
+          value: "seed,api"
         command: ["/bin/sh", "-c", "HOST_NAME=${POD_NAME}.iot-server-demo-seed java -jar /app/IotServerDemo.jar"]
         livenessProbe:
           tcpSocket:

@@ -1,0 +1,31 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    run: iot-server-demo-ingest
+  name: iot-server-demo-ingest
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      run: iot-server-demo-ingest
+  template:
+    metadata:
+      labels:
+        run: iot-server-demo-ingest
+    spec:
+      containers:
+      - name: iot-server-demo-ingest
+        image: navicore/iot-server-demo
+        imagePullPolicy: Always
+        env:
+        - name: BOOTSTRAP
+          value: "kafka-0.broker.kafka.svc.cluster.local:9092"
+        - name: ROLE
+          value: "ingest"
+        livenessProbe:
+          tcpSocket:
+            port: 8081
+        ports:
+        - containerPort: 8081
+          protocol: TCP

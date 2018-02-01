@@ -40,5 +40,3 @@ spec:
         ports:
         - containerPort: 2551
           protocol: TCP
-        - containerPort: 8080
-          protocol: TCP

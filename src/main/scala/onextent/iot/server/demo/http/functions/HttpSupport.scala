@@ -25,7 +25,8 @@ trait HttpSupport extends LazyLogging {
     .toList
     .map(origin => HttpOrigin(origin))
   val urlpath: String = conf.getString("main.path")
-  val port: Int = conf.getInt("main.port")
+  val apiPort: Int = conf.getInt("main.apiPort")
+  val ingestPort: Int = conf.getInt("main.ingestPort")
 
   val corsSettings: CorsSettings.Default = CorsSettings.defaultSettings.copy(
     allowedOrigins = HttpOriginRange(corsOriginList: _*))

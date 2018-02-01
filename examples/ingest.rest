@@ -1,0 +1,37 @@
+http://localhost:8081
+-k
+Content-Type: application/json; charset=utf-8
+--
+
+--
+POST /iot/observation
+{
+    "name": "oil_temp",
+    "value": 120.1,
+    "deviceId": "814a41d9-6778-4b14-bac6-2dec2d5f4085"
+}
+
+--
+POST /iot/observation
+{
+    "name": "oil_temp",
+    "value": 128.2,
+    "deviceId": "814a41d9-6778-4b14-bac6-2dec2d5f4085"
+}
+
+--
+POST /iot/observation
+{
+    "name": "oil_temp",
+    "value": 140.9,
+    "deviceId": "479d2b95-0b62-41ff-8c79-f1d13442a687"
+}
+
+--
+POST /iot/observation
+{
+    "name": "water_level",
+    "value": 0.41,
+    "deviceId": "479d2b95-0b62-41ff-8c79-f1d13442a687"
+}
+
