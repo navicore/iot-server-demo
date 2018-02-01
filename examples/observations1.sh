@@ -1,4 +1,4 @@
-HOST=${HOST:-http://localhost:8080}
+HOST=${HOST:-http://localhost:8081}
 
 API="/iot/observation"
 DATA='{ "name": "oil_temp", "value": 120.1, "deviceId": "814a41d9-6778-4b14-bac6-2dec2d5f4085" }'
