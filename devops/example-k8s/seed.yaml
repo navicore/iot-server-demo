@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: iot-server-demo-seed
-        image: navicore/iot-server-demo
+        image: navicore/iot-server-demo:0.1.79
         imagePullPolicy: Always
         env:
         - name: POD_NAME

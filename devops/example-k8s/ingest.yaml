@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: iot-server-demo-ingest
-        image: navicore/iot-server-demo:0.1.78
+        image: navicore/iot-server-demo:0.1.79
         imagePullPolicy: Always
         env:
         - name: BOOTSTRAP

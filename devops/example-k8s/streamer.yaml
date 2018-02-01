@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: iot-server-demo-streamer
-        image: navicore/iot-server-demo
+        image: navicore/iot-server-demo:0.1.79
         imagePullPolicy: Always
         env:
         - name: HOST_NAME

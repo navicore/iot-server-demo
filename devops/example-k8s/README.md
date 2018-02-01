@@ -9,6 +9,7 @@ Components:
  * service for http ingress
  * ingress controller
  * StatefulSet for seeds
+ * Deployment for http api to write to kafka
  * Deployment for kafka ingestion stream
  * Deployment for workers that also serve as http handlers for ingress service
 
