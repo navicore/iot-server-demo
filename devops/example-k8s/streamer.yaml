@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: iot-server-demo-streamer
-        image: navicore/iot-server-demo:0.1.79
+        image: navicore/iot-server-demo:0.1.80
         imagePullPolicy: Always
         env:
         - name: HOST_NAME
@@ -29,7 +29,7 @@ spec:
         - name: AKKA_SEED1
           value: "akka.tcp://IotServerDemo@iot-server-demo-seed-1.iot-server-demo-seed:2551"
         - name: BOOTSTRAP
-          value: "kafka-0.broker.kafka.svc.cluster.local:9092"
+          value: "my-kafka:9092"
         - name: CONSUMER_GROUP
           value: "IotDemoServerStreamer"
         - name: ROLE

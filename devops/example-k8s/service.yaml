@@ -28,3 +28,17 @@ spec:
     name: http
   selector:
     run: iot-server-demo-worker
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: iot-server-demo-ingest
+spec:
+  ports:
+  - port: 8081
+    protocol: TCP
+    targetPort: 8081
+    name: http
+  selector:
+    run: iot-server-demo-ingest
+

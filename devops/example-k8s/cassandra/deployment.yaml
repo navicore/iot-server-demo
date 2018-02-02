@@ -1,0 +1,40 @@
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: my-cassandra-claim
+spec:
+  storageClassName: my-cassandra
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 200Gi
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    run: my-cassandra
+  name: my-cassandra
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      run: my-cassandra
+  template:
+    metadata:
+      labels:
+        run: my-cassandra
+    spec:
+      containers:
+      - image: cassandra:3.11
+        name: cassandra
+        volumeMounts:
+        - name: data
+          mountPath: /var/lib/cassandra
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: my-cassandra-claim
+
+

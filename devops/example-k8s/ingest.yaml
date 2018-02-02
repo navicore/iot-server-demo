@@ -16,11 +16,11 @@ spec:
     spec:
       containers:
       - name: iot-server-demo-ingest
-        image: navicore/iot-server-demo:0.1.79
+        image: navicore/iot-server-demo:0.1.80
         imagePullPolicy: Always
         env:
         - name: BOOTSTRAP
-          value: "kafka-0.broker.kafka.svc.cluster.local:9092"
+          value: "my-kafka:9092"
         - name: ROLE
           value: "ingest"
         livenessProbe:

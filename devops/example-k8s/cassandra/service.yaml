@@ -1,0 +1,11 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: my-cassandra
+spec:
+  ports:
+    - port: 9042
+      targetPort: 9042
+      name: tcp
+  selector:
+    run: my-cassandra

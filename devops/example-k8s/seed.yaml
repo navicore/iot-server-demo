@@ -17,13 +17,15 @@ spec:
     spec:
       containers:
       - name: iot-server-demo-seed
-        image: navicore/iot-server-demo:0.1.79
+        image: navicore/iot-server-demo:0.1.80
         imagePullPolicy: Always
         env:
         - name: POD_NAME
           valueFrom:
             fieldRef:
               fieldPath: metadata.name
+        - name: CASSANDRA_HOST
+          value: "my-cassandra"
         - name: AKKA_SEED0
           value: "akka.tcp://IotServerDemo@iot-server-demo-seed-0.iot-server-demo-seed:2551"
         - name: AKKA_SEED1

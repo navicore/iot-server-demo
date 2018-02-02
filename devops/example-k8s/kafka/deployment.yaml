@@ -1,0 +1,25 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    run: my-kafka
+  name: my-kafka
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      run: my-kafka
+  template:
+    metadata:
+      labels:
+        run: my-kafka
+    spec:
+      containers:
+      - image: spotify/kafka
+        env:
+        - name: ADVERTISED_PORT
+          value: "9092"
+        - name: ADVERTISED_HOST
+          value: "my-kafka"
+        name: broker
+

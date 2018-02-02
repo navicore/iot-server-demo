@@ -16,9 +16,11 @@ spec:
     spec:
       containers:
       - name: iot-server-demo-worker
-        image: navicore/iot-server-demo:0.1.79
+        image: navicore/iot-server-demo:0.1.80
         imagePullPolicy: Always
         env:
+        - name: CASSANDRA_HOST
+          value: "my-cassandra"
         - name: HOST_NAME
           valueFrom:
             fieldRef:
@@ -28,12 +30,8 @@ spec:
           value: "akka.tcp://IotServerDemo@iot-server-demo-seed-0.iot-server-demo-seed:2551"
         - name: AKKA_SEED1
           value: "akka.tcp://IotServerDemo@iot-server-demo-seed-1.iot-server-demo-seed:2551"
-        - name: BOOTSTRAP
-          value: "kafka-0.broker.kafka.svc.cluster.local:9092"
-        - name: CONSUMER_GROUP
-          value: "IotDemoServerStreamer"
         - name: ROLE
-          value: "worker"
+          value: "worker,api"
         livenessProbe:
           tcpSocket:
             port: 2551

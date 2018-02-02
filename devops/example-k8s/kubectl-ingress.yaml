@@ -15,20 +15,20 @@ spec:
   rules:
   - http:
       paths:
-      - path: /iot/device/.*
+      - path: /iot/devic.*
         backend:
-          serviceName: iot-server-demo
+          serviceName: iot-server-demo-seed
           servicePort: 8080
-      - path: /iot/location/.*
+      - path: /iot/locatio.*
         backend:
-          serviceName: iot-server-demo
+          serviceName: iot-server-demo-seed
           servicePort: 8080
-      - path: /iot/fleet/.*
+      - path: /iot/flee.*
         backend:
-          serviceName: iot-server-demo
+          serviceName: iot-server-demo-seed
           servicePort: 8080
-      - path: /iot/observation/.*
+      - path: /iot/observatio.*
         backend:
-          serviceName: iot-server-demo
+          serviceName: iot-server-demo-ingest
           servicePort: 8081
 

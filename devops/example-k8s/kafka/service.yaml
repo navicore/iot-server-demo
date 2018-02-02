@@ -1,0 +1,11 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: my-kafka
+spec:
+  ports:
+    - port: 9092
+      targetPort: 9092
+      name: tcp
+  selector:
+    run: my-kafka
