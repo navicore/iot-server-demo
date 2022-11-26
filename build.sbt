@@ -14,7 +14,7 @@ version := "1.0"
 ensimeScalaVersion in ThisBuild := "2.12.4"
 scalaVersion := "2.12.17"
 val akkaVersion = "2.5.6"
-val akkaHttpVersion = "10.0.10"
+val akkaHttpVersion = "10.4.0"
 
 resolvers += Resolver.jcenterRepo // for redis
 
